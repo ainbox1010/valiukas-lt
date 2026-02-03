@@ -1,0 +1,22 @@
+# Node
+node_modules/
+.next/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Env
+.env
+.env.*
+
+# Cursor
+.cursor/
+
+# npm
+.npmrc
+.npmcache/
+
+# OS
+.DS_Store
