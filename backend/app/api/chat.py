@@ -10,7 +10,7 @@ from app.core.logging import get_logger, safe_message_excerpt
 from app.core.security import is_disallowed_topic, is_in_scope
 from app.llm.openai_client import create_response
 from app.llm.prompts import build_prompt
-from app.rag.retrieval import retrieve_context
+from app.rag.retrieval import ContextChunk, retrieve_context
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -67,6 +67,21 @@ def _refusal_message() -> str:
     )
 
 
+def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
+    sources: list[dict] = []
+    for chunk in chunks:
+        sources.append(
+            {
+                "doc_id": chunk.doc_id,
+                "title": chunk.title,
+                "section": chunk.section,
+                "chunk_id": chunk.chunk_id,
+                "score": chunk.score,
+            }
+        )
+    return sources
+
+
 @router.post("/chat")
 def chat(payload: ChatRequest) -> dict:
     settings = get_settings()
@@ -80,24 +95,25 @@ def chat(payload: ChatRequest) -> dict:
     identifier = _resolve_identifier(payload)
     limit_result = check_limits(cache, auth_type, identifier)
     if not limit_result.allowed:
-        return {"answer": _refusal_message()}
+        return {"answer": _refusal_message(), "sources": []}
 
     message_excerpt = safe_message_excerpt(payload.message)
     logger.info("chat_request auth=%s id=%s msg=%s", auth_type, identifier, message_excerpt)
 
     if is_disallowed_topic(payload.message):
-        return {"answer": _refusal_message()}
+        return {"answer": _refusal_message(), "sources": []}
 
     if not is_in_scope(payload.message):
-        return {"answer": _refusal_message()}
+        return {"answer": _refusal_message(), "sources": []}
 
     normalized = payload.message.strip().lower()
     if normalized in PRESET_QUESTION_SET:
         cached = cache_get_json(cache, f"answer:{hash_text(normalized)}")
         if cached and "answer" in cached:
-            return {"answer": cached["answer"]}
+            return {"answer": cached["answer"], "sources": cached.get("sources", [])}
 
     context_chunks = retrieve_context(payload.message)
+    sources = _build_sources(context_chunks)
     system_prompt, user_prompt = build_prompt(payload.message, context_chunks)
 
     api_key = payload.auth.byok_token if (payload.auth and payload.auth.type == "byok") else settings.OPENAI_API_KEY
@@ -107,8 +123,8 @@ def chat(payload: ChatRequest) -> dict:
         cache_set_json(
             cache,
             f"answer:{hash_text(normalized)}",
-            {"answer": answer},
+            {"answer": answer, "sources": sources},
             ttl_seconds=86400,
         )
 
-    return {"answer": answer}
+    return {"answer": answer, "sources": sources}

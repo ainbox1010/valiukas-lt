@@ -19,6 +19,7 @@ class ContextChunk:
     section: str | None
     source: str | None
     chunk_id: str | None
+    score: float | None
 
 
 def _dedupe(chunks: list[ContextChunk]) -> list[ContextChunk]:
@@ -57,6 +58,7 @@ def retrieve_context(message: str) -> list[ContextChunk]:
     chunks: list[ContextChunk] = []
     for match in matches:
         metadata = match.get("metadata", {}) if isinstance(match, dict) else match.metadata
+        score = match.get("score") if isinstance(match, dict) else match.score
         chunks.append(
             ContextChunk(
                 text=metadata.get("text", ""),
@@ -65,6 +67,7 @@ def retrieve_context(message: str) -> list[ContextChunk]:
                 section=metadata.get("section"),
                 source=metadata.get("source"),
                 chunk_id=metadata.get("chunk_id"),
+                score=score,
             )
         )
 

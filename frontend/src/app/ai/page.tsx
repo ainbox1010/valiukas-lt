@@ -2,10 +2,19 @@
 
 import { useMemo, useRef, useState } from "react";
 
+type ChatSource = {
+  doc_id?: string | null;
+  title?: string | null;
+  section?: string | null;
+  chunk_id?: string | null;
+  score?: number | null;
+};
+
 type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  sources?: ChatSource[];
 };
 
 const initialMessage: ChatMessage = {
@@ -77,7 +86,10 @@ export default function AiMePage() {
         throw new Error("Request failed");
       }
 
-      const data = (await response.json()) as { answer?: string };
+      const data = (await response.json()) as {
+        answer?: string;
+        sources?: ChatSource[];
+      };
 
       if (!data.answer) {
         throw new Error("Missing answer");
@@ -87,6 +99,7 @@ export default function AiMePage() {
         id: `assistant-${Date.now()}`,
         role: "assistant",
         content: data.answer,
+        sources: data.sources ?? [],
       });
     } catch {
       appendMessage({
@@ -138,6 +151,28 @@ export default function AiMePage() {
                 {message.role === "user" ? "You" : "AI"}
               </div>
               <div style={{ whiteSpace: "pre-line" }}>{message.content}</div>
+              {message.role === "assistant" &&
+              message.sources &&
+              message.sources.length > 0 ? (
+                <details className="chat-sources">
+                  <summary>Sources</summary>
+                  <div className="chat-sources-list">
+                    {message.sources.map((source, index) => (
+                      <div key={`${message.id}-source-${index}`}>
+                        <strong>{source.title ?? "Source"}</strong>
+                        <div>
+                          {source.doc_id ? `doc_id: ${source.doc_id}` : null}
+                          {source.section ? ` · section: ${source.section}` : null}
+                          {source.chunk_id ? ` · chunk: ${source.chunk_id}` : null}
+                          {typeof source.score === "number"
+                            ? ` · score: ${source.score.toFixed(3)}`
+                            : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
             </div>
           ))}
         </div>

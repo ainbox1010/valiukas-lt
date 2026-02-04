@@ -227,3 +227,21 @@ a:hover {
   color: var(--muted);
   font-size: 12px;
 }
+
+.chat-sources {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.chat-sources summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.chat-sources-list {
+  margin-top: 8px;
+  display: grid;
+  gap: 8px;
+}

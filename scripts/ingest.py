@@ -23,12 +23,25 @@ class Chunk:
 
 SECTION_PATTERNS = {
     "profile": re.compile(r"^(profile|summary|about)\b", re.IGNORECASE),
-    "experience": re.compile(r"^(experience|work experience|employment)\b", re.IGNORECASE),
+    "experience": re.compile(
+        r"^(experience|work experience|employment)\b", re.IGNORECASE
+    ),
     "education": re.compile(r"^(education|studies)\b", re.IGNORECASE),
     "skills": re.compile(r"^(skills|technologies|stack)\b", re.IGNORECASE),
     "projects": re.compile(r"^(projects|selected projects)\b", re.IGNORECASE),
-    "facts": re.compile(r"^(facts|highlights|achievements)\b", re.IGNORECASE),
+    "facts": re.compile(r"^(facts|highlights|achievements|notable facts)\b", re.IGNORECASE),
+    "languages": re.compile(r"^(languages)\b", re.IGNORECASE),
+    "tools": re.compile(r"^(tools)\b", re.IGNORECASE),
 }
+
+HEADING_PATTERN = re.compile(
+    r"\b("
+    r"profile|summary|about|experience|work experience|employment|education|studies|"
+    r"skills|technologies|stack|projects|selected projects|facts|highlights|"
+    r"achievements|notable facts|languages|tools"
+    r")\b",
+    re.IGNORECASE,
+)
 
 
 def extract_pdf_text(pdf_path: Path) -> str:
@@ -49,6 +62,21 @@ def normalize_lines(text: str) -> list[str]:
     return lines
 
 
+def _normalize_section(heading: str) -> str:
+    lowered = heading.lower()
+    if lowered in {"summary", "about"}:
+        return "profile"
+    if lowered in {"work experience", "employment"}:
+        return "experience"
+    if lowered in {"technologies", "stack"}:
+        return "skills"
+    if lowered in {"selected projects"}:
+        return "projects"
+    if lowered in {"highlights", "achievements", "notable facts"}:
+        return "facts"
+    return lowered.replace(" ", "_")
+
+
 def detect_section(line: str) -> str | None:
     for section, pattern in SECTION_PATTERNS.items():
         if pattern.search(line):
@@ -58,17 +86,52 @@ def detect_section(line: str) -> str | None:
     return None
 
 
+def split_line_by_headings(line: str) -> list[tuple[str | None, str]]:
+    matches = list(HEADING_PATTERN.finditer(line))
+    if not matches:
+        return [(None, line)]
+
+    segments: list[tuple[str | None, str]] = []
+    for index, match in enumerate(matches):
+        start = match.start()
+        end = match.end()
+        next_start = matches[index + 1].start() if index + 1 < len(matches) else len(line)
+
+        if index == 0 and start > 0:
+            prefix = line[:start].strip()
+            if prefix:
+                segments.append((None, prefix))
+
+        heading = match.group(0)
+        remainder = line[end:next_start].strip()
+        segments.append((_normalize_section(heading), remainder))
+
+    return segments
+
+
 def split_into_sections(lines: list[str]) -> dict[str, list[str]]:
     current_section = "profile"
     sections: dict[str, list[str]] = {current_section: []}
 
     for line in lines:
-        matched = detect_section(line)
-        if matched:
-            current_section = matched
-            sections.setdefault(current_section, [])
-            continue
-        sections[current_section].append(line)
+        segments = split_line_by_headings(line)
+        for section, remainder in segments:
+            if section:
+                current_section = section
+                sections.setdefault(current_section, [])
+                if remainder:
+                    sections[current_section].append(remainder)
+                continue
+
+            matched = detect_section(remainder)
+            if matched:
+                current_section = matched
+                sections.setdefault(current_section, [])
+                continue
+
+            if remainder:
+                sections[current_section].append(remainder)
+
     return sections
 
 
@@ -139,6 +202,11 @@ def main() -> None:
     parser.add_argument("--title", default="CV — Tomas Valiukas")
     parser.add_argument("--source", default="cv_pdf_en")
     parser.add_argument("--max-tokens", type=int, default=700)
+    parser.add_argument(
+        "--replace-doc",
+        action="store_true",
+        help="Delete existing vectors for this doc_id before upserting.",
+    )
     parser.add_argument("--namespace", default=os.environ.get("PINECONE_NAMESPACE"))
     parser.add_argument("--index", default=os.environ.get("PINECONE_INDEX"))
     args = parser.parse_args()
@@ -189,6 +257,9 @@ def main() -> None:
     openai_client = OpenAI(api_key=openai_key)
     pinecone_client = Pinecone(api_key=pinecone_key)
     index = pinecone_client.Index(args.index)
+
+    if args.replace_doc:
+        index.delete(filter={"doc_id": args.doc_id}, namespace=args.namespace)
 
     vectors = []
     for record in chunk_records:
