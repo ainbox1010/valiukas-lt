@@ -1,18 +1,27 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
-
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
+from app.api.chat import router as chat_router
+from app.api.health import router as health_router
+from app.core.config import get_settings
 
 
-class ChatRequest(BaseModel):
-    message: str
+def create_app() -> FastAPI:
+    settings = get_settings()
+    app = FastAPI()
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_origins_list,
+        allow_credentials=True,
+        allow_methods=["POST", "GET", "OPTIONS"],
+        allow_headers=["*"],
+    )
+
+    app.include_router(health_router)
+    app.include_router(chat_router)
+
+    return app
 
 
-@app.post("/chat")
-def chat(_: ChatRequest):
-    raise HTTPException(status_code=501, detail="Chat endpoint not implemented.")
+app = create_app()
