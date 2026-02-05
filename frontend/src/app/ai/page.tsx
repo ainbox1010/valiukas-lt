@@ -289,6 +289,16 @@ export default function AiMePage() {
               ) : null}
             </div>
           ))}
+          {isSending ? (
+            <div className="chat-message assistant">
+              <div className="chat-role">AI</div>
+              <div className="chat-typing">
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+                <span className="typing-dot" />
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <form onSubmit={handleSubmit} className="chat-input-row">
