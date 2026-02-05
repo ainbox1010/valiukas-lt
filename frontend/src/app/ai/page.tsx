@@ -36,6 +36,9 @@ const suggestedQuestions = [
   "How can I contact the real you?",
 ];
 
+const STORAGE_KEY_MESSAGES = "ai_me_messages";
+const STORAGE_KEY_QUOTA = "ai_me_quota";
+
 export default function AiMePage() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [inputValue, setInputValue] = useState("");
@@ -43,11 +46,42 @@ export default function AiMePage() {
   const [quota, setQuota] = useState<{ remaining: number; limit: number } | null>(
     null
   );
+  const [isHydrated, setIsHydrated] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
 
   const canSend = inputValue.trim().length > 0 && !isSending;
 
   useEffect(() => {
+    const storedMessages = localStorage.getItem(STORAGE_KEY_MESSAGES);
+    if (storedMessages) {
+      try {
+        const parsed = JSON.parse(storedMessages) as ChatMessage[];
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setMessages(parsed);
+        }
+      } catch {
+        // Ignore invalid storage.
+      }
+    }
+
+    const storedQuota = localStorage.getItem(STORAGE_KEY_QUOTA);
+    if (storedQuota) {
+      try {
+        const parsed = JSON.parse(storedQuota) as {
+          remaining: number;
+          limit: number;
+        };
+        if (
+          typeof parsed.remaining === "number" &&
+          typeof parsed.limit === "number"
+        ) {
+          setQuota(parsed);
+        }
+      } catch {
+        // Ignore invalid storage.
+      }
+    }
+
     const loadQuota = async () => {
       try {
         const response = await fetch("/api/limits", { cache: "no-store" });
@@ -65,7 +99,20 @@ export default function AiMePage() {
     };
 
     void loadQuota();
+    setIsHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    localStorage.setItem(STORAGE_KEY_MESSAGES, JSON.stringify(messages));
+  }, [messages, isHydrated]);
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (quota) {
+      localStorage.setItem(STORAGE_KEY_QUOTA, JSON.stringify(quota));
+    }
+  }, [quota, isHydrated]);
 
   const visibleSuggestions = useMemo(() => {
     return suggestedQuestions;
@@ -235,12 +282,12 @@ export default function AiMePage() {
           </button>
         </form>
         <div className="chat-status">
-          {isSending ? <span>Sending…</span> : null}
-          {quota ? (
-            <span>
-              Requests left: {quota.remaining} out of {quota.limit} today
-            </span>
-          ) : null}
+          <span>{isSending ? "Sending…" : ""}</span>
+          <span>
+            {quota
+              ? `Requests left: ${quota.remaining} out of ${quota.limit} today`
+              : ""}
+          </span>
         </div>
       </section>
     </div>
