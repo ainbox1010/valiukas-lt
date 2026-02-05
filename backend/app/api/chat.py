@@ -1,6 +1,6 @@
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Query
 from pydantic import BaseModel, Field, field_validator
 
 from app.core.cache import cache_get_json, cache_set_json, get_cache, hash_text
@@ -49,7 +49,11 @@ class ChatRequest(BaseModel):
         return trimmed
 
 
-def _resolve_identifier(payload: ChatRequest | None, request: Request | None) -> str:
+def _resolve_identifier(
+    payload: ChatRequest | None, request: Request | None, visitor_id: str | None = None
+) -> str:
+    if visitor_id:
+        return visitor_id
     if payload:
         if payload.auth and payload.auth.sub:
             return payload.auth.sub
@@ -71,7 +75,9 @@ def _refusal_message() -> str:
 
 
 def _limit_message() -> str:
-    return "You’ve reached today’s free limit for AI Me."
+    return (
+        "Thank you for your genuine interest! You’ve reached today’s free limit for AI Me."
+    )
 
 
 def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
@@ -170,9 +176,9 @@ def chat(payload: ChatRequest, request: Request) -> dict:
 
 
 @router.get("/limits")
-def limits(request: Request) -> dict:
+def limits(request: Request, visitor_id: str | None = Query(default=None)) -> dict:
     cache = get_cache()
     auth_type = "anonymous"
-    identifier = _resolve_identifier(None, request)
+    identifier = _resolve_identifier(None, request, visitor_id)
     status = get_limit_status(cache, auth_type, identifier)
     return {"remaining": status.remaining, "limit": status.limit}

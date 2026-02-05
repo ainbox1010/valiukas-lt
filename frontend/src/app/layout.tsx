@@ -34,9 +34,6 @@ export default function RootLayout({
                   {link.label}
                 </Link>
               ))}
-              <Link className="nav-cta" href="/sign-in">
-                Sign in
-              </Link>
             </nav>
           </div>
         </header>

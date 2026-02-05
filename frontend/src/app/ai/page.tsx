@@ -38,6 +38,19 @@ const suggestedQuestions = [
 
 const STORAGE_KEY_MESSAGES = "ai_me_messages";
 const STORAGE_KEY_QUOTA = "ai_me_quota";
+const STORAGE_KEY_VISITOR = "ai_me_visitor_id";
+
+const getVisitorId = () => {
+  if (typeof window === "undefined") return null;
+  const existing = localStorage.getItem(STORAGE_KEY_VISITOR);
+  if (existing) return existing;
+  const generated =
+    typeof crypto !== "undefined" && "randomUUID" in crypto
+      ? crypto.randomUUID()
+      : `v_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+  localStorage.setItem(STORAGE_KEY_VISITOR, generated);
+  return generated;
+};
 
 export default function AiMePage() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
@@ -85,7 +98,11 @@ export default function AiMePage() {
 
     const loadQuota = async () => {
       try {
-        const response = await fetch("/api/limits", { cache: "no-store" });
+        const visitorId = getVisitorId();
+        const response = await fetch(
+          `/api/limits${visitorId ? `?visitor_id=${visitorId}` : ""}`,
+          { cache: "no-store" }
+        );
         if (!response.ok) return;
         const data = (await response.json()) as {
           remaining?: number | null;
@@ -162,7 +179,7 @@ export default function AiMePage() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed }),
+        body: JSON.stringify({ message: trimmed, visitor_id: getVisitorId() }),
       });
 
       if (!response.ok) {
@@ -253,15 +270,11 @@ export default function AiMePage() {
               <div style={{ whiteSpace: "pre-line" }}>{message.content}</div>
               {message.role === "assistant" && message.limitReached ? (
                 <div className="chat-actions">
-                  <a className="chat-action" href="/sign-in">
-                    Please register to continue
-                  </a>
-                  <span className="chat-action-separator">or</span>
                   <a
                     className="chat-action secondary"
                     href="mailto:ainbox1010@gmail.com?subject=AI%20Me%20—%20question"
                   >
-                    Email me
+                    Email me instead.
                   </a>
                 </div>
               ) : null}
