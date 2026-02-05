@@ -61,6 +61,23 @@ a:hover {
   flex-wrap: wrap;
   font-size: 14px;
   color: var(--muted);
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.nav-cta {
+  background: transparent;
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+
+.nav-cta:hover {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .hero {
@@ -226,6 +243,9 @@ a:hover {
 .chat-status {
   color: var(--muted);
   font-size: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .chat-sources {
@@ -244,4 +264,34 @@ a:hover {
   margin-top: 8px;
   display: grid;
   gap: 8px;
+}
+
+.chat-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chat-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  padding: 8px 14px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chat-action.secondary {
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.chat-action-separator {
+  color: var(--muted);
+  font-size: 12px;
 }

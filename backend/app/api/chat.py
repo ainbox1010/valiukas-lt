@@ -1,11 +1,11 @@
 from typing import Literal
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field, field_validator
 
 from app.core.cache import cache_get_json, cache_set_json, get_cache, hash_text
 from app.core.config import get_settings
-from app.core.limits import check_limits
+from app.core.limits import check_limits, get_limit_status
 from app.core.logging import get_logger, safe_message_excerpt
 from app.core.security import is_disallowed_topic, is_in_scope
 from app.llm.openai_client import create_response
@@ -49,13 +49,16 @@ class ChatRequest(BaseModel):
         return trimmed
 
 
-def _resolve_identifier(payload: ChatRequest) -> str:
-    if payload.auth and payload.auth.sub:
-        return payload.auth.sub
-    if payload.visitor_id:
-        return payload.visitor_id
-    if payload.session_id:
-        return payload.session_id
+def _resolve_identifier(payload: ChatRequest | None, request: Request | None) -> str:
+    if payload:
+        if payload.auth and payload.auth.sub:
+            return payload.auth.sub
+        if payload.visitor_id:
+            return payload.visitor_id
+        if payload.session_id:
+            return payload.session_id
+    if request and request.client:
+        return request.client.host
     return "unknown"
 
 
@@ -65,6 +68,10 @@ def _refusal_message() -> str:
         "I can help with questions about his experience, projects, "
         "or how he approaches problems."
     )
+
+
+def _limit_message() -> str:
+    return "You’ve reached today’s free limit for AI Me."
 
 
 def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
@@ -83,7 +90,7 @@ def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
 
 
 @router.post("/chat")
-def chat(payload: ChatRequest) -> dict:
+def chat(payload: ChatRequest, request: Request) -> dict:
     settings = get_settings()
     cache = get_cache()
 
@@ -92,25 +99,52 @@ def chat(payload: ChatRequest) -> dict:
     if auth_type == "byok" and not (payload.auth and payload.auth.byok_token):
         raise HTTPException(status_code=400, detail="Missing BYOK token.")
 
-    identifier = _resolve_identifier(payload)
+    identifier = _resolve_identifier(payload, request)
     limit_result = check_limits(cache, auth_type, identifier)
     if not limit_result.allowed:
-        return {"answer": _refusal_message(), "sources": []}
+        logger.info(
+            "rate_limit auth=%s id=%s reason=%s",
+            auth_type,
+            identifier,
+            limit_result.reason,
+        )
+        return {
+            "answer": _limit_message(),
+            "sources": [],
+            "limit_reached": True,
+            "remaining": limit_result.remaining,
+            "limit": limit_result.limit,
+        }
 
     message_excerpt = safe_message_excerpt(payload.message)
     logger.info("chat_request auth=%s id=%s msg=%s", auth_type, identifier, message_excerpt)
 
     if is_disallowed_topic(payload.message):
-        return {"answer": _refusal_message(), "sources": []}
+        return {
+            "answer": _refusal_message(),
+            "sources": [],
+            "remaining": limit_result.remaining,
+            "limit": limit_result.limit,
+        }
 
     if not is_in_scope(payload.message):
-        return {"answer": _refusal_message(), "sources": []}
+        return {
+            "answer": _refusal_message(),
+            "sources": [],
+            "remaining": limit_result.remaining,
+            "limit": limit_result.limit,
+        }
 
     normalized = payload.message.strip().lower()
     if normalized in PRESET_QUESTION_SET:
         cached = cache_get_json(cache, f"answer:{hash_text(normalized)}")
         if cached and "answer" in cached:
-            return {"answer": cached["answer"], "sources": cached.get("sources", [])}
+            return {
+                "answer": cached["answer"],
+                "sources": cached.get("sources", []),
+                "remaining": limit_result.remaining,
+                "limit": limit_result.limit,
+            }
 
     context_chunks = retrieve_context(payload.message)
     sources = _build_sources(context_chunks)
@@ -127,4 +161,18 @@ def chat(payload: ChatRequest) -> dict:
             ttl_seconds=86400,
         )
 
-    return {"answer": answer, "sources": sources}
+    return {
+        "answer": answer,
+        "sources": sources,
+        "remaining": limit_result.remaining,
+        "limit": limit_result.limit,
+    }
+
+
+@router.get("/limits")
+def limits(request: Request) -> dict:
+    cache = get_cache()
+    auth_type = "anonymous"
+    identifier = _resolve_identifier(None, request)
+    status = get_limit_status(cache, auth_type, identifier)
+    return {"remaining": status.remaining, "limit": status.limit}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ChatSource = {
   doc_id?: string | null;
@@ -15,6 +15,7 @@ type ChatMessage = {
   role: "user" | "assistant";
   content: string;
   sources?: ChatSource[];
+  limitReached?: boolean;
 };
 
 const initialMessage: ChatMessage = {
@@ -39,9 +40,32 @@ export default function AiMePage() {
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [quota, setQuota] = useState<{ remaining: number; limit: number } | null>(
+    null
+  );
   const transcriptRef = useRef<HTMLDivElement | null>(null);
 
   const canSend = inputValue.trim().length > 0 && !isSending;
+
+  useEffect(() => {
+    const loadQuota = async () => {
+      try {
+        const response = await fetch("/api/limits", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = (await response.json()) as {
+          remaining?: number | null;
+          limit?: number | null;
+        };
+        if (typeof data.remaining === "number" && typeof data.limit === "number") {
+          setQuota({ remaining: data.remaining, limit: data.limit });
+        }
+      } catch {
+        // Ignore quota load errors for now.
+      }
+    };
+
+    void loadQuota();
+  }, []);
 
   const visibleSuggestions = useMemo(() => {
     return suggestedQuestions;
@@ -89,6 +113,9 @@ export default function AiMePage() {
       const data = (await response.json()) as {
         answer?: string;
         sources?: ChatSource[];
+        limit_reached?: boolean;
+        remaining?: number | null;
+        limit?: number | null;
       };
 
       if (!data.answer) {
@@ -100,7 +127,11 @@ export default function AiMePage() {
         role: "assistant",
         content: data.answer,
         sources: data.sources ?? [],
+        limitReached: data.limit_reached ?? false,
       });
+      if (typeof data.remaining === "number" && typeof data.limit === "number") {
+        setQuota({ remaining: data.remaining, limit: data.limit });
+      }
     } catch {
       appendMessage({
         id: `assistant-error-${Date.now()}`,
@@ -151,6 +182,20 @@ export default function AiMePage() {
                 {message.role === "user" ? "You" : "AI"}
               </div>
               <div style={{ whiteSpace: "pre-line" }}>{message.content}</div>
+              {message.role === "assistant" && message.limitReached ? (
+                <div className="chat-actions">
+                  <a className="chat-action" href="/sign-in">
+                    Please register to continue
+                  </a>
+                  <span className="chat-action-separator">or</span>
+                  <a
+                    className="chat-action secondary"
+                    href="mailto:ainbox1010@gmail.com?subject=AI%20Me%20—%20question"
+                  >
+                    Email me
+                  </a>
+                </div>
+              ) : null}
               {message.role === "assistant" &&
               message.sources &&
               message.sources.length > 0 ? (
@@ -189,7 +234,14 @@ export default function AiMePage() {
             {isSending ? "Sending…" : "Send"}
           </button>
         </form>
-        {isSending ? <div className="chat-status">Sending…</div> : null}
+        <div className="chat-status">
+          {isSending ? <span>Sending…</span> : null}
+          {quota ? (
+            <span>
+              Requests left: {quota.remaining} out of {quota.limit} today
+            </span>
+          ) : null}
+        </div>
       </section>
     </div>
   );

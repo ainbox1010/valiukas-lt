@@ -2,6 +2,7 @@ import json
 import time
 from dataclasses import dataclass
 import hashlib
+from functools import lru_cache
 
 import redis
 
@@ -72,11 +73,16 @@ class RedisCache(CacheBackend):
         return value
 
 
+def _build_cache(redis_url: str | None) -> CacheBackend:
+    if redis_url:
+        return RedisCache(redis_url)
+    return InMemoryCache()
+
+
+@lru_cache
 def get_cache() -> CacheBackend:
     settings = get_settings()
-    if settings.REDIS_URL:
-        return RedisCache(settings.REDIS_URL)
-    return InMemoryCache()
+    return _build_cache(settings.REDIS_URL)
 
 
 def cache_get_json(cache: CacheBackend, key: str) -> dict | None:
