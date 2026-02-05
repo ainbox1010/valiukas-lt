@@ -76,7 +76,8 @@ def _refusal_message() -> str:
 
 def _limit_message() -> str:
     return (
-        "Thank you for your genuine interest! You’ve reached today’s free limit for AI Me."
+        "Thank you for your genuine interest! You’ve reached today’s free limit for AI Me. "
+        "Should you have further questions, kindly email me instead."
     )
 
 

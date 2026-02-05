@@ -274,7 +274,7 @@ export default function AiMePage() {
                     className="chat-action secondary"
                     href="mailto:ainbox1010@gmail.com?subject=AI%20Me%20—%20question"
                   >
-                    Email me instead.
+                    Email me
                   </a>
                 </div>
               ) : null}
