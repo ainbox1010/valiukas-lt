@@ -48,6 +48,7 @@ export default function AiMePage() {
   );
   const [isHydrated, setIsHydrated] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const canSend = inputValue.trim().length > 0 && !isSending;
 
@@ -114,6 +115,12 @@ export default function AiMePage() {
     }
   }, [quota, isHydrated]);
 
+  useEffect(() => {
+    if (!isSending) {
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [isSending]);
+
   const visibleSuggestions = useMemo(() => {
     return suggestedQuestions;
   }, []);
@@ -123,6 +130,10 @@ export default function AiMePage() {
     if (!node) return;
     node.scrollTop = node.scrollHeight;
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const appendMessage = (message: ChatMessage) => {
     setMessages((prev) => {
@@ -138,6 +149,7 @@ export default function AiMePage() {
 
     setIsSending(true);
     setInputValue("");
+    requestAnimationFrame(() => inputRef.current?.focus());
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
@@ -187,12 +199,22 @@ export default function AiMePage() {
       });
     } finally {
       setIsSending(false);
+      requestAnimationFrame(() => inputRef.current?.focus());
     }
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    inputRef.current?.focus();
     void sendMessage(inputValue);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      inputRef.current?.focus();
+      void sendMessage(inputValue);
+    }
   };
 
   return (
@@ -271,13 +293,20 @@ export default function AiMePage() {
 
         <form onSubmit={handleSubmit} className="chat-input-row">
           <input
+            ref={inputRef}
             type="text"
             placeholder="Ask a question..."
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
+            onKeyDown={handleKeyDown}
             disabled={isSending}
+            autoFocus
           />
-          <button type="submit" disabled={!canSend}>
+          <button
+            type="submit"
+            disabled={!canSend}
+            onMouseDown={(event) => event.preventDefault()}
+          >
             {isSending ? "Sending…" : "Send"}
           </button>
         </form>
