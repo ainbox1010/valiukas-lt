@@ -40,7 +40,7 @@ export default function RootLayout({
         <main className="container">{children}</main>
         <footer className="footer">
           <div className="container">
-            <div>Trust-first AI and IT projects. Built with privacy in mind.</div>
+            <div>AI that works. Ask instead of browsing.</div>
           </div>
         </footer>
       </body>

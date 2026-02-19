@@ -1,55 +1,96 @@
-export default function HomePage() {
+import Link from "next/link";
+
+import { loadMarkdown } from "@/lib/content/loadMarkdown";
+
+type ExploreItem = {
+  title?: string;
+  href?: string;
+  desc?: string;
+};
+
+type AiMeBlock = {
+  href?: string;
+  subtext?: string;
+  credibility?: string;
+  cta_label?: string;
+  prompts?: string[];
+};
+
+export default async function HomePage() {
+  const { frontmatter, html } = await loadMarkdown("pages/home.md");
+  const title =
+    typeof frontmatter.title === "string" ? frontmatter.title : "Home";
+  const summary =
+    typeof frontmatter.summary === "string" ? frontmatter.summary : "";
+  const explore = Array.isArray(frontmatter.explore)
+    ? (frontmatter.explore as ExploreItem[])
+    : [];
+  const aiMe = (frontmatter.ai_me ?? {}) as AiMeBlock;
+  const aiMePrompts = Array.isArray(aiMe.prompts) ? aiMe.prompts : [];
+
   return (
     <div>
       <section className="hero">
-        <div className="tag">Personal site</div>
-        <div className="tag">AI + IT projects</div>
-        <h1>Trust-first AI work, built for real-world constraints.</h1>
-        <p>
-          I help teams build credible AI experiences with strong privacy and
-          compliance guarantees. This site is a home for my work, services, and a
-          grounded AI assistant that answers only from verified sources.
-        </p>
+        <h1>{title}</h1>
+        {summary ? <p>{summary}</p> : null}
       </section>
 
       <section className="section">
         <h2>What you can explore</h2>
-        <div className="grid">
-          <div className="card">
-            <strong>About</strong>
-            <div className="list">
-              <div>Background, focus areas, and how I work.</div>
+        <div className="card card-hero">
+          <div className="card-hero-content">
+            <div>
+              <strong>AI Me</strong>
+              {aiMe.subtext ? <div className="list">{aiMe.subtext}</div> : null}
+              {aiMe.credibility ? (
+                <div className="list">{aiMe.credibility}</div>
+              ) : null}
+              {aiMePrompts.length > 0 ? (
+                <div className="prompt-chips">
+                  {aiMePrompts.map((prompt) => (
+                    <Link
+                      key={prompt}
+                      href={`/ai?q=${encodeURIComponent(prompt)}`}
+                      className="prompt-chip"
+                    >
+                      {prompt}
+                    </Link>
+                  ))}
+                </div>
+              ) : null}
             </div>
+            <Link className="cta-button" href={aiMe.href ?? "/ai"}>
+              {aiMe.cta_label ?? "Ask AI Me"}
+            </Link>
           </div>
-          <div className="card">
-            <strong>Services</strong>
-            <div className="list">
-              <div>Clear packages for delivery and advisory work.</div>
-            </div>
-          </div>
-          <div className="card">
-            <strong>Projects</strong>
-            <div className="list">
-              <div>Short, factual case studies.</div>
-            </div>
-          </div>
-          <div className="card">
-            <strong>AI Me</strong>
-            <div className="list">
-              <div>AI answers backed by citations.</div>
-            </div>
-          </div>
+        </div>
+
+        <div className="grid grid-compact">
+          {explore.map((item) => {
+            if (!item || !item.href || !item.title) {
+              return null;
+            }
+            const href = String(item.href);
+            return (
+              <Link key={href} href={href} className="card card-link">
+                <strong>{item.title}</strong>
+                {item.desc ? (
+                  <div className="list">
+                    <div>{item.desc}</div>
+                  </div>
+                ) : null}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       <section className="section">
-        <h2>Privacy and security first</h2>
         <div className="card">
-          <div className="list">
-            <div>Answers are grounded in curated documents.</div>
-            <div>User-supplied API keys are never stored or logged.</div>
-            <div>Failure modes are intentional and user-friendly.</div>
-          </div>
+          <div
+            className="markdown"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
         </div>
       </section>
     </div>

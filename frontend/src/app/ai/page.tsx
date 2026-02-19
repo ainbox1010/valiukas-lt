@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 type ChatSource = {
   doc_id?: string | null;
@@ -53,6 +54,7 @@ const getVisitorId = () => {
 };
 
 export default function AiMePage() {
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -62,6 +64,7 @@ export default function AiMePage() {
   const [isHydrated, setIsHydrated] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const consumedPrefillRef = useRef<string | null>(null);
 
   const canSend = inputValue.trim().length > 0 && !isSending;
 
@@ -137,6 +140,21 @@ export default function AiMePage() {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isSending]);
+
+  useEffect(() => {
+    const query = searchParams?.get("q")?.trim();
+    if (!query || isSending) {
+      return;
+    }
+    if (consumedPrefillRef.current === query) {
+      return;
+    }
+    if (!inputValue) {
+      setInputValue(query);
+      consumedPrefillRef.current = query;
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [searchParams, inputValue, isSending]);
 
   const visibleSuggestions = useMemo(() => {
     return suggestedQuestions;
