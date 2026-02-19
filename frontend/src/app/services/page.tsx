@@ -2,7 +2,7 @@ import { loadMarkdown } from "@/lib/content/loadMarkdown";
 import ServicesAccordion, { type ServiceSection } from "./ServicesAccordion";
 
 export default async function ServicesPage() {
-  const { frontmatter } = await loadMarkdown("services.md");
+  const { frontmatter } = await loadMarkdown("pages/services.md");
   const title =
     typeof frontmatter.title === "string" ? frontmatter.title : "Services";
   const summary =
