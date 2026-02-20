@@ -262,6 +262,39 @@ a:hover {
   color: var(--muted);
 }
 
+.projects-list {
+  display: grid;
+  gap: 14px;
+}
+
+.projects-details {
+  margin-top: 0;
+}
+
+.projects-summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.projects-summary::-webkit-details-marker {
+  display: none;
+}
+
+.projects-details-content {
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.project-attribution {
+  margin-top: 14px;
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+  color: var(--muted);
+  display: grid;
+  gap: 4px;
+}
+
 .grid {
   display: grid;
   gap: 16px;

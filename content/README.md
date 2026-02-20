@@ -23,3 +23,10 @@ doc_id: "about_v1"
 - `content_type`: preferred over `type`.
 - `visibility`: use `public` for ingest; `private` to skip.
 - `doc_id`: stable id for citations and re-ingest.
+- Omit empty fields entirely (do not store `""`, `[]`, or null-like placeholders).
+
+## Project File Rules (`content/pages/projects/*.md`)
+- Do not include `year` in frontmatter.
+- Do not include `status` in frontmatter.
+- Keep attribution inside markdown body (content-driven), not UI-driven.
+- If a field has no value, remove the key from frontmatter.
