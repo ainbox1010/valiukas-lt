@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/ai", label: "AI Me" },
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
+  { href: "/partners", label: "Partners" },
   { href: "/timeline", label: "Timeline" },
   { href: "/contact", label: "Contact" },
 ];

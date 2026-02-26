@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 type ChatSource = {
@@ -40,6 +40,7 @@ const suggestedQuestions = [
 const STORAGE_KEY_MESSAGES = "ai_me_messages";
 const STORAGE_KEY_QUOTA = "ai_me_quota";
 const STORAGE_KEY_VISITOR = "ai_me_visitor_id";
+const URL_PATTERN = /(https?:\/\/[^\s]+)/g;
 
 const getVisitorId = () => {
   if (typeof window === "undefined") return null;
@@ -52,6 +53,43 @@ const getVisitorId = () => {
   localStorage.setItem(STORAGE_KEY_VISITOR, generated);
   return generated;
 };
+
+function renderMessageContent(content: string) {
+  const lines = content.split("\n");
+
+  return lines.map((line, lineIndex) => {
+    const segments = line.split(URL_PATTERN);
+    return (
+      <Fragment key={`line-${lineIndex}`}>
+        {segments.map((segment, segmentIndex) => {
+          if (!segment.match(URL_PATTERN)) {
+            return (
+              <Fragment key={`text-${lineIndex}-${segmentIndex}`}>
+                {segment}
+              </Fragment>
+            );
+          }
+
+          const trailingPunctuationMatch = segment.match(/[.,!?;:)]+$/);
+          const trailingPunctuation = trailingPunctuationMatch?.[0] ?? "";
+          const href = trailingPunctuation
+            ? segment.slice(0, -trailingPunctuation.length)
+            : segment;
+
+          return (
+            <Fragment key={`url-${lineIndex}-${segmentIndex}`}>
+              <a href={href} target="_blank" rel="noreferrer">
+                {href}
+              </a>
+              {trailingPunctuation}
+            </Fragment>
+          );
+        })}
+        {lineIndex < lines.length - 1 ? <br /> : null}
+      </Fragment>
+    );
+  });
+}
 
 export default function AiMePage() {
   const searchParams = useSearchParams();
@@ -285,7 +323,7 @@ export default function AiMePage() {
               <div className="chat-role">
                 {message.role === "user" ? "You" : "AI"}
               </div>
-              <div style={{ whiteSpace: "pre-line" }}>{message.content}</div>
+              <div>{renderMessageContent(message.content)}</div>
               {message.role === "assistant" && message.limitReached ? (
                 <div className="chat-actions">
                   <a
