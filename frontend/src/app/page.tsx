@@ -16,6 +16,13 @@ type AiMeBlock = {
   prompts?: string[];
 };
 
+type EntryOfferBlock = {
+  title?: string;
+  subtitle?: string;
+  cta_label?: string;
+  cta_href?: string;
+};
+
 export default async function HomePage() {
   const { frontmatter, html } = await loadMarkdown("pages/home.md");
   const title =
@@ -27,16 +34,76 @@ export default async function HomePage() {
     : [];
   const aiMe = (frontmatter.ai_me ?? {}) as AiMeBlock;
   const aiMePrompts = Array.isArray(aiMe.prompts) ? aiMe.prompts : [];
+  const entryOffer = (frontmatter.entry_offer ?? {}) as EntryOfferBlock;
+  const proofPoints = Array.isArray(frontmatter.proof_points)
+    ? (frontmatter.proof_points as string[])
+    : [];
+  const icp = Array.isArray(frontmatter.icp) ? (frontmatter.icp as string[]) : [];
+  const contactEmail =
+    typeof frontmatter.contact_email === "string"
+      ? frontmatter.contact_email
+      : "";
 
   return (
     <div>
       <section className="hero">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}
+        <div className="hero-actions">
+          <Link className="cta-button" href="/contact">
+            Book a call
+          </Link>
+          <Link className="cta-button cta-button-secondary" href="/ai">
+            Ask AI Me
+          </Link>
+        </div>
       </section>
 
       <section className="section">
-        <h2>What you can explore</h2>
+        <div className="grid homepage-conversion-grid">
+          <div className="card">
+            <h2>Start here</h2>
+            <div className="list">
+              <strong>{entryOffer.title ?? "Workflow Diagnostic"}</strong>
+              {entryOffer.subtitle ? <div>{entryOffer.subtitle}</div> : null}
+              <div>
+                <Link
+                  className="cta-button"
+                  href={entryOffer.cta_href ?? "/contact"}
+                >
+                  {entryOffer.cta_label ?? "Start with a diagnostic"}
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div className="card">
+            <h2>Proof</h2>
+            <ul className="homepage-proof-list">
+              {proofPoints.length > 0 ? (
+                proofPoints.map((item) => <li key={item}>{item}</li>)
+              ) : (
+                <li>Proof points will be updated with quantified outcomes.</li>
+              )}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="card">
+          <h2>Ideal fit</h2>
+          <ul className="homepage-proof-list">
+            {icp.length > 0 ? (
+              icp.map((item) => <li key={item}>{item}</li>)
+            ) : (
+              <li>Teams with operational workflows and clear outcomes to improve.</li>
+            )}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section">
+        <h2>What you can do here</h2>
         <div className="card card-hero">
           <div className="card-hero-content">
             <div>
@@ -91,6 +158,33 @@ export default async function HomePage() {
             className="markdown"
             dangerouslySetInnerHTML={{ __html: html }}
           />
+        </div>
+      </section>
+
+      <section className="section" id="contact">
+        <div className="card">
+          <div className="markdown">
+            <h2>Contact</h2>
+            <p>
+              <strong>
+                Tell me what you want to automate and what systems you use.
+              </strong>
+            </p>
+            <p>You will get a clear next step within one conversation.</p>
+            {contactEmail ? (
+              <p>
+                Email:{" "}
+                <a href={`mailto:${contactEmail}`}>
+                  {contactEmail}
+                </a>
+              </p>
+            ) : null}
+            <p>Location: Lithuania / remote</p>
+            <p>
+              Prefer a structured intake? Use the{" "}
+              <Link href="/contact">Contact page</Link>.
+            </p>
+          </div>
         </div>
       </section>
     </div>

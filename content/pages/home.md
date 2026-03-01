@@ -1,39 +1,63 @@
 ---
-title: "AI that works for your business"
-slug: "home"
+title: "I build AI and automation systems around how your business actually works."
+slug: ""
 content_type: "page"
 section: "home"
-summary: "Workflow automation, applied AI systems, and voice/IVR chatbots."
+summary: "From process clarity to working systems with clear ownership and measurable outcomes."
 language: "en"
 visibility: "public"
-tags: ["landing"]
-updated_at: "2026-02-12"
-doc_id: "home_v1"
+updated_at: "2026-02-27"
+doc_id: "home_v4"
+contact_email: "ainbox1010@gmail.com"
+entry_offer:
+  title: "Workflow Diagnostic"
+  subtitle: "Fixed-scope starting engagement to identify the highest-ROI workflow and a practical system design path."
+  cta_label: "Start with Workflow Diagnostic"
+  cta_href: "/contact"
+proof_points:
+  - "Thousands of administrative hours saved across automation initiatives."
+  - "Manual workflows reduced from multi-step handoffs to near real-time execution."
+  - "Lower error rates through structured process and data handling."
+icp:
+  - "Operations-heavy teams with repetitive manual workflows"
+  - "Document-heavy environments (emails, PDFs, attachments)"
+  - "SMEs and scaling organizations that need clear ROI and delivery ownership"
 ai_me:
   href: "/ai"
-  subtext: "Got something on your mind? Ask me instead of browsing this page."
+  subtext: "Ask practical implementation questions."
   credibility: "This is the same architecture I build for clients."
   cta_label: "Ask AI Me"
   prompts:
-    - "Can you automate proposal comparison?"
-    - "Can you integrate voice AI with IVR/call flows?"
-    - "Can you build an internal assistant for documents and requests?"
+    - "Can we automate proposal or supplier comparison?"
+    - "How do we extract structured fields from PDFs and emails?"
+    - "What would an internal assistant for requests look like?"
+    - "Where should we start for visible ROI?"
 explore:
   - title: "Services"
     href: "/services"
-    desc: "AI systems, workflow automation, and voice integration."
+    desc: "What I deliver and how."
   - title: "Projects"
     href: "/projects"
     desc: "Short, factual case studies."
-  - title: "About"
-    href: "/about"
-    desc: "Background, focus areas, and how I work."
+  - title: "Partners"
+    href: "/partners"
+    desc: "Specialist ecosystem engaged when needed."
 ---
 
-## What I do
+## Start at the right level
 
-- **Workflow automation (internal & external):** automate internal ops and customer request flows.
-- **Applied AI systems (not demos):** retrieval-based assistants, document intelligence, and integrations.
-- **Voice AI & IVR integration:** integrate existing voice AI solutions into IVR/call flows (telco background).
+Not every company needs the same starting point.
 
-When regulatory alignment is required, I work with specialist partners.
+Depending on scope, initiatives can begin at different levels:
+
+- Redesigning internal processes and governance
+- Structuring transformation before automation
+- Designing AI architecture aligned with business goals
+- Implementing automation and AI systems
+- Aligning delivery with compliance and security requirements
+
+When projects require deeper capacity, I involve trusted specialists in enterprise transformation, AI engineering, automation delivery, and cybersecurity.
+
+I remain responsible for orchestration, ensuring business goals, system design, and implementation stay aligned.
+
+[How I deliver services ->](/services)

@@ -95,6 +95,13 @@ a:hover {
   color: var(--muted);
 }
 
+.hero-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 .section {
   padding: 36px 0;
 }
@@ -148,6 +155,18 @@ a:hover {
   background: rgba(56, 189, 248, 0.9);
 }
 
+.cta-button-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.cta-button-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
 .prompt-chips {
   margin-top: 12px;
   display: flex;
@@ -170,6 +189,17 @@ a:hover {
 
 .grid-compact {
   margin-top: 12px;
+}
+
+.homepage-conversion-grid {
+  align-items: stretch;
+}
+
+.homepage-proof-list {
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
 }
 
 .services-page .hero {
@@ -343,6 +373,11 @@ a:hover {
 }
 
 .markdown li {
+  color: var(--muted);
+}
+
+.contact-note {
+  margin-top: 8px;
   color: var(--muted);
 }
 
