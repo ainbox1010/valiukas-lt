@@ -1,10 +1,21 @@
 import type { Metadata } from "next";
+import PartnersAccordion from "./PartnersAccordion";
 
 export const metadata: Metadata = {
   title: "Partners | valiukas.lt",
+  description:
+    "Delivery partners and collaboration model. Trusted specialists for automation, AI, compliance, and enterprise transformation.",
 };
 
-const PARTNERS = [
+const PARTNERS: {
+  id: string;
+  name: string;
+  tagline: string;
+  bestFor: string[];
+  collaborationModel: string;
+  linkLabel: string;
+  linkUrl: string | null;
+}[] = [
   {
     id: "erobot-ai",
     name: "erobot.ai",
@@ -73,10 +84,12 @@ const PARTNERS = [
 
 export default function PartnersPage() {
   return (
-    <div className="section">
+    <div className="section partners-page">
       <section className="hero">
         <h1>Partners</h1>
-        <p>Delivery partners and collaboration model.</p>
+        <p className="hero-subtitle">
+          Delivery partners and collaboration model.
+        </p>
       </section>
 
       <section className="section">
@@ -85,61 +98,15 @@ export default function PartnersPage() {
           <p>
             While I architect and design AI-enabled systems, certain projects
             require specialized delivery teams, industry experience, or
-            additional implementation capacity.
-          </p>
-          <p>For such cases, I collaborate with trusted partners.</p>
-          <p>
-            Projects listed on this site clearly indicate whether they were
-            delivered directly by me or in cooperation with a partner.
-          </p>
-          <p>
-            Some projects are anonymized where confidentiality agreements
-            apply.
+            additional implementation capacity. For such cases, I collaborate
+            with trusted partners. Projects listed on this site clearly indicate
+            whether they were delivered directly by me or in cooperation with a
+            partner. Some projects are anonymized where confidentiality
+            agreements apply.
           </p>
         </div>
 
-        <div className="projects-list">
-          {PARTNERS.map((partner) => (
-            <details
-              key={partner.id}
-              className="projects-details card"
-            >
-              <summary className="projects-summary">
-                <strong>{partner.name}</strong>
-                <div className="list">
-                  <div>{partner.tagline}</div>
-                </div>
-              </summary>
-              <div className="projects-details-content markdown">
-                <p>
-                  <strong>Best for:</strong>
-                </p>
-                <ul>
-                  {partner.bestFor.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-                <p>
-                  <strong>Collaboration model:</strong> {partner.collaborationModel}
-                </p>
-                {partner.linkUrl ? (
-                  <p>
-                    <strong>{partner.linkLabel}:</strong>{" "}
-                    <a
-                      href={partner.linkUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {partner.linkLabel === "LinkedIn"
-                        ? partner.name
-                        : partner.linkUrl}
-                    </a>
-                  </p>
-                ) : null}
-              </div>
-            </details>
-          ))}
-        </div>
+        <PartnersAccordion partners={PARTNERS} />
       </section>
     </div>
   );

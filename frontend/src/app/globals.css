@@ -499,6 +499,70 @@ a:hover {
   margin-bottom: 24px;
 }
 
+.hero-subtitle {
+  font-size: 0.95em;
+  color: var(--muted);
+}
+
+.partners-list {
+  display: grid;
+  gap: 14px;
+}
+
+.partners-details {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+}
+
+.partners-details:last-child {
+  border-bottom: none;
+}
+
+.partners-details:hover {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+.partners-details .projects-summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.partners-tagline {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.partners-external-link {
+  color: var(--accent);
+}
+
+.partners-external-link:hover {
+  text-decoration: underline;
+}
+
+.partners-external-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.partners-external-icon {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.partners-section-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.partners-section-label strong {
+  font-weight: 600;
+}
+
 .projects-details {
   margin-top: 0;
 }
