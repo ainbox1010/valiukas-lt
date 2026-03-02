@@ -3,16 +3,14 @@ title: "Services"
 slug: "services"
 content_type: "page"
 section: "services"
-summary: "From process clarity to working AI and automation systems."
+summary: ""
 language: "en"
 visibility: "public"
 tags: ["services", "ai", "automation", "workflows", "documents"]
 updated_at: "2026-02-27"
 doc_id: "services_v4"
 intro:
-  - "Not every company needs automation first."
-  - "Some need clarity before building."
-  - "I work across three levels depending on what your situation requires."
+  - "I work across three levels. Each level builds on the previous one and defines clear scope, ownership, and outcomes."
 highlights:
   - "Level 1: Process clarity and system design."
   - "Level 2: Workflow automation."
@@ -20,7 +18,7 @@ highlights:
 sections:
   - id: "level-1-process-clarity"
     title: "Level 1 — Process clarity & system design"
-    summary: "Define the process and governance foundation before introducing AI or automation."
+    summary: "Define structure and governance before introducing tools."
     use_cases:
       - "Map how work actually flows today."
       - "Identify where decisions are made."
@@ -39,7 +37,7 @@ sections:
       - "There is no operational problem to solve."
   - id: "level-2-workflow-automation"
     title: "Level 2 — Workflow automation"
-    summary: "Automate internal operations and customer request flows across tools and teams."
+    summary: "Automate structured operational flows across teams and systems."
     use_cases:
       - "Intake -> validation -> routing -> approval."
       - "Reporting automation (weekly, monthly)."
@@ -58,7 +56,7 @@ sections:
       - "There is no measurable target outcome."
   - id: "level-3-applied-ai"
     title: "Level 3 — Applied AI systems"
-    summary: "Apply AI once workflows and data are structured enough to produce reliable value."
+    summary: "Implement document intelligence and retrieval-based assistants grounded in your data."
     use_cases:
       - "Document intelligence: extract fields from invoices, offers, CMRs, and proposals."
       - "Document intelligence: compare documents against a master file (Excel/database)."
@@ -135,9 +133,5 @@ sections:
 ---
 
 # Services
-
-Not every company needs automation first. Some need clarity before building.
-
-I work across three levels depending on what your situation requires.
 
 If you have a workflow in mind, describe what triggers it, who touches it, which tools are involved, and what final output should be produced.

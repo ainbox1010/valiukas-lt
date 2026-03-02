@@ -10,9 +10,6 @@ export default async function ServicesPage() {
   const intro = Array.isArray(frontmatter.intro)
     ? (frontmatter.intro as string[])
     : [];
-  const highlights = Array.isArray(frontmatter.highlights)
-    ? (frontmatter.highlights as string[])
-    : [];
   const sections = Array.isArray(frontmatter.sections)
     ? (frontmatter.sections as ServiceSection[])
     : [];
@@ -29,19 +26,14 @@ export default async function ServicesPage() {
             ))}
           </div>
         ) : null}
-        {highlights.length > 0 ? (
-          <div className="grid services-highlights-grid">
-            {highlights.map((item) => (
-              <div className="card services-highlight-card" key={item}>
-                {item}
-              </div>
-            ))}
-          </div>
-        ) : null}
       </section>
 
       <section className="section">
-        <ServicesAccordion sections={sections} />
+        <ServicesAccordion
+          sections={sections}
+          dividerAfterIndex={2}
+          dividerTitle="How I work"
+        />
       </section>
     </div>
   );

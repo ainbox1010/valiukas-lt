@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment } from "react";
 
 export type ServiceSection = {
   id: string;
@@ -14,63 +14,65 @@ export type ServiceSection = {
 
 type ServicesAccordionProps = {
   sections: ServiceSection[];
+  dividerAfterIndex?: number;
+  dividerTitle?: string;
 };
 
-export default function ServicesAccordion({ sections }: ServicesAccordionProps) {
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-
-  const setAllOpen = (open: boolean) => {
-    const node = wrapperRef.current;
-    if (!node) return;
-    const details = node.querySelectorAll("details");
-    details.forEach((item) => {
-      item.open = open;
-    });
-  };
-
+export default function ServicesAccordion({
+  sections,
+  dividerAfterIndex,
+  dividerTitle = "How I work",
+}: ServicesAccordionProps) {
   return (
-    <div className="services-accordion-wrapper" ref={wrapperRef}>
-      <div className="services-controls">
-        <button
-          type="button"
-          className="services-control-button"
-          onClick={() => setAllOpen(true)}
-        >
-          Expand all
-        </button>
-        <button
-          type="button"
-          className="services-control-button"
-          onClick={() => setAllOpen(false)}
-        >
-          Collapse all
-        </button>
-      </div>
-
+    <div className="services-accordion-wrapper">
       <div className="services-accordion-list">
-        {sections.map((section) => (
-          <details key={section.id} className="services-details">
+        {sections.map((section, index) => (
+          <Fragment key={section.id}>
+            {dividerAfterIndex !== undefined &&
+            index === dividerAfterIndex + 1 &&
+            dividerTitle ? (
+              <h2 className="services-delivery-heading">{dividerTitle}</h2>
+            ) : null}
+            <details
+            key={section.id}
+            id={section.id}
+            className="services-details"
+          >
             <summary className="services-summary">
               <strong>{section.title}</strong>
-              <div className="services-summary-sub">{section.summary}</div>
+              {section.summary ? (
+                <div className="services-summary-sub">{section.summary}</div>
+              ) : null}
             </summary>
 
             <div className="services-details-content">
-              <h3>Typical use cases</h3>
-              <ul>
-                {section.use_cases.map((item) => (
-                  <li key={`${section.id}-use-${item}`}>{item}</li>
-                ))}
-              </ul>
+              {!["how-delivery-works", "engagement-models"].includes(
+                section.id
+              ) ? (
+                <>
+                  <h3>Use cases</h3>
+                  <ul>
+                    {section.use_cases.map((item) => (
+                      <li key={`${section.id}-use-${item}`}>{item}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <ul>
+                  {section.use_cases.map((item) => (
+                    <li key={`${section.id}-use-${item}`}>{item}</li>
+                  ))}
+                </ul>
+              )}
 
-              <h3>What you get</h3>
+              <h3>Outcomes</h3>
               <ul>
                 {section.what_you_get.map((item) => (
                   <li key={`${section.id}-get-${item}`}>{item}</li>
                 ))}
               </ul>
 
-              <h3>Good fit when</h3>
+              <h3>Good fit</h3>
               <ul>
                 {section.good_fit_when.map((item) => (
                   <li key={`${section.id}-fit-${item}`}>{item}</li>
@@ -79,7 +81,7 @@ export default function ServicesAccordion({ sections }: ServicesAccordionProps) 
 
               {section.not_fit_when && section.not_fit_when.length > 0 ? (
                 <>
-                  <h3>Not a fit when</h3>
+                  <h3>Not a fit</h3>
                   <ul>
                     {section.not_fit_when.map((item) => (
                       <li key={`${section.id}-not-${item}`}>{item}</li>
@@ -89,6 +91,7 @@ export default function ServicesAccordion({ sections }: ServicesAccordionProps) 
               ) : null}
             </div>
           </details>
+          </Fragment>
         ))}
       </div>
     </div>

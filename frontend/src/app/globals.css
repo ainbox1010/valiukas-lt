@@ -382,6 +382,19 @@ a:hover {
   min-height: 84px;
 }
 
+.services-level-link {
+  cursor: pointer;
+  text-align: left;
+  border: 1px solid var(--border);
+  font: inherit;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.services-level-link:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
 .services-controls {
   display: flex;
   gap: 10px;
@@ -407,6 +420,16 @@ a:hover {
   gap: 12px;
 }
 
+.services-delivery-heading {
+  margin-top: 32px;
+  margin-bottom: 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  font-size: 1.1em;
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+
 .services-details {
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -417,11 +440,27 @@ a:hover {
 .services-summary {
   list-style: none;
   cursor: pointer;
-  padding: 14px 16px;
+  padding: 14px 40px 14px 16px;
+  position: relative;
 }
 
 .services-summary::-webkit-details-marker {
   display: none;
+}
+
+.services-summary::after {
+  content: "▾";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.services-details[open] .services-summary::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .services-summary-sub {
@@ -546,6 +585,57 @@ a:hover {
 .contact-note {
   margin-top: 8px;
   color: var(--muted);
+}
+
+.contact-email-link {
+  font-weight: 700;
+  font-size: 1.15em;
+  color: var(--accent);
+}
+
+.contact-email-link:hover {
+  text-decoration: underline;
+}
+
+.contact-form-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.contact-form-minimal textarea {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font: inherit;
+  color: var(--text);
+  resize: vertical;
+}
+
+.contact-form-minimal textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.contact-form-minimal textarea::placeholder {
+  color: var(--muted);
+}
+
+.contact-form-minimal button {
+  background: var(--accent);
+  color: #0b0f19;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  align-self: start;
+}
+
+.contact-form-minimal button:hover {
+  background: rgba(56, 189, 248, 0.9);
 }
 
 .chat-shell {
