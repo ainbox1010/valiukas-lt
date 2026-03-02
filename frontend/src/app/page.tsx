@@ -43,19 +43,62 @@ export default async function HomePage() {
     typeof frontmatter.contact_email === "string"
       ? frontmatter.contact_email
       : "";
+  const levelsIntro =
+    typeof frontmatter.levels_intro === "string"
+      ? frontmatter.levels_intro
+      : "We can start engaging at three different levels — depending on what your situation requires.";
+  const levels = Array.isArray(frontmatter.levels)
+    ? (frontmatter.levels as Array<{
+        id?: string;
+        title?: string;
+        summary?: string;
+        expand_bullets?: string[];
+        ai_me_prompt?: string;
+      }>)
+    : [];
 
   return (
     <div>
       <section className="hero">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}
-        <div className="hero-actions">
-          <Link className="cta-button" href="/contact">
-            Book a call
-          </Link>
-          <Link className="cta-button cta-button-secondary" href="/ai">
-            Ask AI Me
-          </Link>
+        <p className="hero-levels-intro">{levelsIntro}</p>
+        <div className="hero-levels">
+          {levels.map((level) => (
+            <details key={level.id ?? level.title} className="hero-level-card">
+              <summary className="hero-level-summary">
+                <strong>{level.title}</strong>
+              </summary>
+              <div className="hero-level-content">
+                {level.summary ? <p>{level.summary}</p> : null}
+                {Array.isArray(level.expand_bullets) &&
+                level.expand_bullets.length > 0 ? (
+                  <ul>
+                    {level.expand_bullets.map((b) => (
+                      <li key={b}>{b}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                {level.ai_me_prompt ? (
+                  <div className="hero-level-ai-option">
+                    <p>
+                      <a href={`mailto:${contactEmail}?subject=Level%20inquiry`}>
+                        Discuss your situation directly
+                      </a>
+                      {" — or explore it with AI Me."}
+                    </p>
+                    <Link
+                      className="cta-button cta-button-secondary"
+                      href={`/ai?q=${encodeURIComponent(level.ai_me_prompt)}`}
+                    >
+                      <strong>AI Me</strong>
+                      {" — explore how your process, automation, or AI initiative should start."}
+                    </Link>
+                  </div>
+                ) : null}
+              </div>
+            </details>
+          ))}
         </div>
       </section>
 

@@ -102,6 +102,100 @@ a:hover {
   flex-wrap: wrap;
 }
 
+.hero-levels-intro {
+  margin-top: 16px;
+  max-width: 640px;
+  color: var(--muted);
+}
+
+.hero-levels {
+  margin-top: 20px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero-level-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.hero-level-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 40px 14px 16px;
+  position: relative;
+}
+
+.hero-level-summary::-webkit-details-marker {
+  display: none;
+}
+
+.hero-level-summary::after {
+  content: "▾";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.hero-level-card[open] .hero-level-summary::after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.hero-level-content {
+  border-top: 1px solid var(--border);
+  padding: 14px 16px 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.hero-level-content ul {
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.hero-level-ai-option {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border);
+  display: grid;
+  gap: 8px;
+}
+
+.hero-level-ai-option p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.hero-level-ai-option p a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.hero-level-ai-option p a:hover {
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+.hero-level-ai-option .hero-level-ai-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.hero-level-ai-option .hero-level-ai-link:hover {
+  color: var(--accent);
+}
+
 .section {
   padding: 36px 0;
 }
