@@ -7,12 +7,13 @@ summary: "From process clarity to working systems with clear ownership and measu
 language: "en"
 visibility: "public"
 updated_at: "2026-02-27"
-doc_id: "home_v4"
+doc_id: "home_v5"
 contact_email: "ainbox1010@gmail.com"
-levels_intro: "We can start engaging at three different levels — depending on what your situation requires."
+levels_intro: "Work begins at the right level — depending on your situation."
 levels:
   - id: "level-1"
     title: "Level 1 — Process clarity & system design"
+    descriptor: "Define structure and governance before introducing tools."
     summary: "Define the process and governance foundation before introducing AI or automation."
     expand_bullets:
       - "Map how work actually flows today."
@@ -22,6 +23,7 @@ levels:
     ai_me_prompt: "What does process clarity and system design mean before automation?"
   - id: "level-2"
     title: "Level 2 — Workflow automation"
+    descriptor: "Automate structured operational flows across teams and systems."
     summary: "Automate internal operations and customer request flows across tools and teams."
     expand_bullets:
       - "Intake → validation → routing → approval."
@@ -31,25 +33,23 @@ levels:
     ai_me_prompt: "What kind of workflows can be automated?"
   - id: "level-3"
     title: "Level 3 — Applied AI systems"
+    descriptor: "Implement document intelligence and retrieval-based assistants grounded in your data."
     summary: "Apply AI once workflows and data are structured enough to produce reliable value."
     expand_bullets:
       - "Document intelligence: extract fields, compare documents, flag exceptions."
       - "Retrieval assistants: internal knowledge search with citations."
       - "AI-assisted triage of operational requests."
     ai_me_prompt: "What are applied AI systems and when do they make sense?"
-entry_offer:
-  title: "Workflow Diagnostic"
-  subtitle: "Fixed-scope starting engagement to identify the highest-ROI workflow and a practical system design path."
-  cta_label: "Start with Workflow Diagnostic"
-  cta_href: "/contact"
 proof_points:
-  - "Thousands of administrative hours saved across automation initiatives."
-  - "Manual workflows reduced from multi-step handoffs to near real-time execution."
-  - "Lower error rates through structured process and data handling."
+  - "Manual multi-step workflows converted into structured, traceable systems."
+  - "Email- and PDF-driven operations turned into structured data pipelines."
+  - "Decision logic embedded into workflows instead of living in inboxes."
+  - "Systems designed with clear scope, ownership, and integration boundaries."
 icp:
-  - "Operations-heavy teams with repetitive manual workflows"
-  - "Document-heavy environments (emails, PDFs, attachments)"
-  - "SMEs and scaling organizations that need clear ROI and delivery ownership"
+  - "Teams where work lives in inboxes, spreadsheets, and manual handoffs"
+  - "Organizations that need clarity before introducing automation or AI"
+  - "Companies scaling operations and wanting systems that fit how they actually work"
+  - "Businesses that require structured delivery and clear ownership"
 ai_me:
   href: "/ai"
   subtext: "Ask practical implementation questions."
@@ -70,22 +70,7 @@ explore:
   - title: "Partners"
     href: "/partners"
     desc: "Specialist ecosystem engaged when needed."
+  - title: "Contact"
+    href: "/contact"
+    desc: "Next step and how to reach me."
 ---
-
-## Start at the right level
-
-Not every company needs the same starting point.
-
-Depending on scope, initiatives can begin at different levels:
-
-- Redesigning internal processes and governance
-- Structuring transformation before automation
-- Designing AI architecture aligned with business goals
-- Implementing automation and AI systems
-- Aligning delivery with compliance and security requirements
-
-When projects require deeper capacity, I involve trusted specialists in enterprise transformation, AI engineering, automation delivery, and cybersecurity.
-
-I remain responsible for orchestration, ensuring business goals, system design, and implementation stay aligned.
-
-[How I deliver services ->](/services)

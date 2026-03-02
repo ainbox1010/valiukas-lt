@@ -41,7 +41,7 @@ export default function RootLayout({
         <main className="container">{children}</main>
         <footer className="footer">
           <div className="container">
-            <div>AI that works. Ask instead of browsing.</div>
+            <div>AI that works. <Link href="/ai">Ask instead of browsing.</Link></div>
           </div>
         </footer>
       </body>

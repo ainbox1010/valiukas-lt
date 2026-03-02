@@ -2,55 +2,25 @@ import Link from "next/link";
 
 import { loadMarkdown } from "@/lib/content/loadMarkdown";
 
-type ExploreItem = {
-  title?: string;
-  href?: string;
-  desc?: string;
-};
-
-type AiMeBlock = {
-  href?: string;
-  subtext?: string;
-  credibility?: string;
-  cta_label?: string;
-  prompts?: string[];
-};
-
-type EntryOfferBlock = {
-  title?: string;
-  subtitle?: string;
-  cta_label?: string;
-  cta_href?: string;
-};
-
 export default async function HomePage() {
-  const { frontmatter, html } = await loadMarkdown("pages/home.md");
+  const { frontmatter } = await loadMarkdown("pages/home.md");
   const title =
     typeof frontmatter.title === "string" ? frontmatter.title : "Home";
   const summary =
     typeof frontmatter.summary === "string" ? frontmatter.summary : "";
-  const explore = Array.isArray(frontmatter.explore)
-    ? (frontmatter.explore as ExploreItem[])
-    : [];
-  const aiMe = (frontmatter.ai_me ?? {}) as AiMeBlock;
-  const aiMePrompts = Array.isArray(aiMe.prompts) ? aiMe.prompts : [];
-  const entryOffer = (frontmatter.entry_offer ?? {}) as EntryOfferBlock;
   const proofPoints = Array.isArray(frontmatter.proof_points)
     ? (frontmatter.proof_points as string[])
     : [];
   const icp = Array.isArray(frontmatter.icp) ? (frontmatter.icp as string[]) : [];
-  const contactEmail =
-    typeof frontmatter.contact_email === "string"
-      ? frontmatter.contact_email
-      : "";
   const levelsIntro =
     typeof frontmatter.levels_intro === "string"
       ? frontmatter.levels_intro
-      : "We can start engaging at three different levels — depending on what your situation requires.";
+      : "Work begins at the right level — depending on your situation.";
   const levels = Array.isArray(frontmatter.levels)
     ? (frontmatter.levels as Array<{
         id?: string;
         title?: string;
+        descriptor?: string;
         summary?: string;
         expand_bullets?: string[];
         ai_me_prompt?: string;
@@ -68,6 +38,9 @@ export default async function HomePage() {
             <details key={level.id ?? level.title} className="hero-level-card">
               <summary className="hero-level-summary">
                 <strong>{level.title}</strong>
+                {level.descriptor ? (
+                  <span className="hero-level-descriptor">{level.descriptor}</span>
+                ) : null}
               </summary>
               <div className="hero-level-content">
                 {level.summary ? <p>{level.summary}</p> : null}
@@ -82,18 +55,24 @@ export default async function HomePage() {
                 {level.ai_me_prompt ? (
                   <div className="hero-level-ai-option">
                     <p>
-                      <a href={`mailto:${contactEmail}?subject=Level%20inquiry`}>
-                        Discuss your situation directly
-                      </a>
-                      {" — or explore it with AI Me."}
+                      Explore your situation with AI Me — or discuss your case
+                      directly.
                     </p>
-                    <Link
-                      className="cta-button cta-button-secondary"
-                      href={`/ai?q=${encodeURIComponent(level.ai_me_prompt)}`}
-                    >
-                      <strong>AI Me</strong>
-                      {" — explore how your process, automation, or AI initiative should start."}
-                    </Link>
+                    <div className="cta-two-buttons">
+                      <Link
+                        className="cta-button cta-button-secondary"
+                        href={`/ai?q=${encodeURIComponent(level.ai_me_prompt)}`}
+                      >
+                        AI Me — explore how your process, automation, or AI
+                        initiative should start.
+                      </Link>
+                      <Link
+                        className="cta-button cta-button-secondary"
+                        href="/contact"
+                      >
+                        Discuss your case directly
+                      </Link>
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -103,24 +82,9 @@ export default async function HomePage() {
       </section>
 
       <section className="section">
-        <div className="grid homepage-conversion-grid">
+        <div className="grid homepage-conversion-grid homepage-proof-fit-grid">
           <div className="card">
-            <h2>Start here</h2>
-            <div className="list">
-              <strong>{entryOffer.title ?? "Workflow Diagnostic"}</strong>
-              {entryOffer.subtitle ? <div>{entryOffer.subtitle}</div> : null}
-              <div>
-                <Link
-                  className="cta-button"
-                  href={entryOffer.cta_href ?? "/contact"}
-                >
-                  {entryOffer.cta_label ?? "Start with a diagnostic"}
-                </Link>
-              </div>
-            </div>
-          </div>
-          <div className="card">
-            <h2>Proof</h2>
+            <h2>Previous results</h2>
             <ul className="homepage-proof-list">
               {proofPoints.length > 0 ? (
                 proofPoints.map((item) => <li key={item}>{item}</li>)
@@ -128,105 +92,46 @@ export default async function HomePage() {
                 <li>Proof points will be updated with quantified outcomes.</li>
               )}
             </ul>
+            <p className="homepage-proof-link">
+              <Link href="/projects">View Projects →</Link>
+            </p>
+          </div>
+          <div className="card">
+            <h2>Best fit for</h2>
+            <ul className="homepage-proof-list">
+              {icp.length > 0 ? (
+                icp.map((item) => <li key={item}>{item}</li>)
+              ) : (
+                <li>Teams with operational workflows and clear outcomes to improve.</li>
+              )}
+            </ul>
+            <p className="homepage-proof-link">
+              <Link href="/services">View Services →</Link>
+            </p>
           </div>
         </div>
       </section>
 
       <section className="section">
         <div className="card">
-          <h2>Ideal fit</h2>
-          <ul className="homepage-proof-list">
-            {icp.length > 0 ? (
-              icp.map((item) => <li key={item}>{item}</li>)
-            ) : (
-              <li>Teams with operational workflows and clear outcomes to improve.</li>
-            )}
-          </ul>
-        </div>
-      </section>
-
-      <section className="section">
-        <h2>What you can do here</h2>
-        <div className="card card-hero">
-          <div className="card-hero-content">
-            <div>
-              <strong>AI Me</strong>
-              {aiMe.subtext ? <div className="list">{aiMe.subtext}</div> : null}
-              {aiMe.credibility ? (
-                <div className="list">{aiMe.credibility}</div>
-              ) : null}
-              {aiMePrompts.length > 0 ? (
-                <div className="prompt-chips">
-                  {aiMePrompts.map((prompt) => (
-                    <Link
-                      key={prompt}
-                      href={`/ai?q=${encodeURIComponent(prompt)}`}
-                      className="prompt-chip"
-                    >
-                      {prompt}
-                    </Link>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            <Link className="cta-button" href={aiMe.href ?? "/ai"}>
-              {aiMe.cta_label ?? "Ask AI Me"}
+          <h2>Not sure where to start?</h2>
+          <p>
+            Explore your situation with AI Me — or discuss your case directly.
+          </p>
+          <div className="cta-two-buttons">
+            <Link
+              className="cta-button cta-button-secondary"
+              href="/ai"
+            >
+              AI Me — explore how your process, automation, or AI initiative
+              should start.
             </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-compact">
-          {explore.map((item) => {
-            if (!item || !item.href || !item.title) {
-              return null;
-            }
-            const href = String(item.href);
-            return (
-              <Link key={href} href={href} className="card card-link">
-                <strong>{item.title}</strong>
-                {item.desc ? (
-                  <div className="list">
-                    <div>{item.desc}</div>
-                  </div>
-                ) : null}
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="card">
-          <div
-            className="markdown"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
-        </div>
-      </section>
-
-      <section className="section" id="contact">
-        <div className="card">
-          <div className="markdown">
-            <h2>Contact</h2>
-            <p>
-              <strong>
-                Tell me what you want to automate and what systems you use.
-              </strong>
-            </p>
-            <p>You will get a clear next step within one conversation.</p>
-            {contactEmail ? (
-              <p>
-                Email:{" "}
-                <a href={`mailto:${contactEmail}`}>
-                  {contactEmail}
-                </a>
-              </p>
-            ) : null}
-            <p>Location: Lithuania / remote</p>
-            <p>
-              Prefer a structured intake? Use the{" "}
-              <Link href="/contact">Contact page</Link>.
-            </p>
+            <Link
+              className="cta-button cta-button-secondary"
+              href="/contact"
+            >
+              Discuss your case directly
+            </Link>
           </div>
         </div>
       </section>
