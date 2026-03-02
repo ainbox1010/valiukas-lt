@@ -495,6 +495,10 @@ a:hover {
   gap: 14px;
 }
 
+.partners-collaboration-intro {
+  margin-bottom: 24px;
+}
+
 .projects-details {
   margin-top: 0;
 }
@@ -502,10 +506,27 @@ a:hover {
 .projects-summary {
   list-style: none;
   cursor: pointer;
+  padding: 14px 40px 14px 16px;
+  position: relative;
 }
 
 .projects-summary::-webkit-details-marker {
   display: none;
+}
+
+.projects-summary::after {
+  content: "▾";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.projects-details[open] .projects-summary::after {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .projects-details-content {
