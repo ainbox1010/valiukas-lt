@@ -2,12 +2,15 @@
 title: "Rampa Pro — Automated Truck & Ramp Management"
 slug: "projects/rampa-pro"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated truck entry, parking and ramp assignment system for secure logistics facilities."
 industry: "Logistics / Industrial Operations"
-tags: ["automation", "ANPR", "logistics", "secure facilities", "workflow"]
+tags: ["anpr", "automation", "logistics", "secure-facilities", "workflow"]
 visibility: "public"
 language: "en"
 doc_id: "project_rampa_pro_public_v1"
+partner: "beelogic.io"
 ---
 
 ## Rampa Pro

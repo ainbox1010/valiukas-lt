@@ -2,12 +2,14 @@
 title: "Municipal Digitalization: GBV & Disability Services"
 slug: "projects/municipal-gbv-pwd-digitalization"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Digital case management and public reporting systems for gender-based violence and disability services."
 industry: "Public sector / Municipal government"
 visibility: "public"
 language: "en"
 doc_id: "project_municipal_gbv_pwd_public_v1"
-tags: ["public-sector", "digital-transformation", "case-management", "dashboards", "workflow"]
+tags: ["case-management", "dashboards", "digital-transformation", "public-sector", "workflow"]
 partner: "erobot.ai"
 ---
 

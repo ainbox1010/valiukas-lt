@@ -2,12 +2,15 @@
 title: "Balloon Live — Digital Hot Air Balloon Competition Management"
 slug: "projects/balloon-live"
 content_type: "project"
+ownership: "partner"
+type: "systems"
 summary: "Mobile application that digitizes goal declarations, tracking, and result processing in hot air balloon competitions."
 industry: "Aviation / Sports Technology"
-tags: ["mobile app", "gps tracking", "sports tech", "digitization", "real-time data"]
+tags: ["digitization", "gps-tracking", "mobile-app", "real-time-data", "sports-tech"]
 visibility: "public"
 language: "en"
 doc_id: "project_beelogic_balloon_live_public"
+partner: "beelogic.io"
 ---
 
 ## Balloon Live

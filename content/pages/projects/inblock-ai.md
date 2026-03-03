@@ -2,9 +2,11 @@
 title: "InBlock AI — Agentic Crypto Risk Evaluation MVP"
 slug: "projects/inblock-ai"
 content_type: "project"
+ownership: "self"
+type: "ai"
 summary: "Deterministic, explainable crypto token risk evaluation system built using multi-agent LLM orchestration."
 industry: "FinTech / AI / Crypto Infrastructure"
-tags: ["agentic systems", "llm orchestration", "risk scoring", "crypto analysis", "rag"]
+tags: ["agentic-systems", "crypto-analysis", "llm-orchestration", "rag", "risk-scoring"]
 visibility: "public"
 language: "en"
 doc_id: "project_inblock_ai_public"

@@ -2,12 +2,14 @@
 title: "Accounting Firm — Document Monitoring Automation"
 slug: "projects/accounting-document-monitoring-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated monitoring and reminder system for client document submissions in a growing accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
 language: "en"
 doc_id: "project_accounting_document_monitoring_public_v1"
-tags: ["professional-services", "automation", "rpa", "workflow", "cloud-integration"]
+tags: ["automation", "cloud-integration", "professional-services", "rpa", "workflow"]
 partner: "erobot.ai"
 ---
 

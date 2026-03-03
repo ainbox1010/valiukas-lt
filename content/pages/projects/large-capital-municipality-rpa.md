@@ -2,12 +2,14 @@
 title: "Large Capital Municipality — RPA & AI Automation"
 slug: "projects/large-capital-municipality-rpa"
 content_type: "project"
+ownership: "partner"
+type: "ai"
 summary: "More than 10 robotic workflows deployed in a major European capital municipality, delivering measurable time savings and AI-assisted document automation."
 industry: "Public sector / Municipality"
 visibility: "public"
 language: "en"
 doc_id: "project_large_capital_municipality_rpa_public_v1"
-tags: ["public-sector", "rpa", "automation", "ai", "workflow"]
+tags: ["ai", "automation", "public-sector", "rpa", "workflow"]
 partner: "erobot.ai"
 ---
 

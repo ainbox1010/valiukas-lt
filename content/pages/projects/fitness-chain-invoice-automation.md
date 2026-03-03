@@ -2,12 +2,14 @@
 title: "Multi-Location Fitness Chain — Invoice Automation"
 slug: "projects/fitness-chain-invoice-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automation of invoice data transfer between financial systems for a large multi-location fitness operator."
 industry: "Fitness / Retail / Services"
 visibility: "public"
 language: "en"
 doc_id: "project_fitness_invoice_automation_public_v1"
-tags: ["finance", "automation", "rpa", "invoice-processing", "workflow"]
+tags: ["automation", "finance", "invoice-processing", "rpa", "workflow"]
 partner: "erobot.ai"
 ---
 

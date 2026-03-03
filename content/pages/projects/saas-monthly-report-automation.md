@@ -2,12 +2,14 @@
 title: "Event-Tech Startup — Monthly Report Automation"
 slug: "projects/saas-monthly-report-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated data extraction and monthly reporting workflow for a fast-growing SaaS company."
 industry: "SaaS / Event technology"
 visibility: "public"
 language: "en"
 doc_id: "project_saas_monthly_report_public_v1"
-tags: ["saas", "automation", "reporting", "workflow", "data-extraction"]
+tags: ["automation", "data-extraction", "reporting", "saas", "workflow"]
 partner: "erobot.ai"
 ---
 

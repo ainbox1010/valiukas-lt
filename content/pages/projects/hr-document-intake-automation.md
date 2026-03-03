@@ -2,12 +2,14 @@
 title: "HR Services Company — Document Intake Automation"
 slug: "projects/hr-document-intake-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automation of high-volume document intake using OCR and Microsoft workflow technologies."
 industry: "HR services / Professional services"
 visibility: "public"
 language: "en"
 doc_id: "project_hr_document_intake_public_v1"
-tags: ["hr", "automation", "ocr", "microsoft", "workflow"]
+tags: ["automation", "hr", "microsoft", "ocr", "workflow"]
 partner: "erobot.ai"
 ---
 

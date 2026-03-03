@@ -2,12 +2,14 @@
 title: "Home Healthcare Provider — Mobile Data Automation"
 slug: "projects/home-healthcare-mobile-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Mobile app and automated data processing for a healthcare provider serving patients at home."
 industry: "Healthcare"
 visibility: "public"
 language: "en"
 doc_id: "project_home_healthcare_mobile_public_v1"
-tags: ["healthcare", "mobile-app", "automation", "data-processing", "qr-identification"]
+tags: ["automation", "data-processing", "healthcare", "mobile-app", "qr-identification"]
 partner: "erobot.ai"
 ---
 

@@ -2,12 +2,15 @@
 title: "FactorySense — Smart Factory Monitoring"
 slug: "projects/factorysense"
 content_type: "project"
+ownership: "partner"
+type: "ai"
 summary: "Web-based system for real-time factory monitoring, sensor tracking, and anomaly alerting."
 industry: "Industrial / Manufacturing"
-tags: ["factory monitoring", "sensors", "real-time analytics", "anomaly detection", "maintenance"]
+tags: ["anomaly-detection", "factory-monitoring", "maintenance", "real-time-analytics", "sensors"]
 visibility: "public"
 language: "en"
 doc_id: "project_beelogic_factorysense_public"
+partner: "beelogic.io"
 ---
 
 ## FactorySense

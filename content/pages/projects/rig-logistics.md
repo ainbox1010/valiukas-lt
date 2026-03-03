@@ -2,12 +2,15 @@
 title: "Rig Logistics — Offshore Platform Logistics Management"
 slug: "projects/rig-logistics"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Advanced logistics management system for offshore oil platform deliveries."
 industry: "Energy / Offshore / Logistics"
-tags: ["logistics", "offshore", "automation", "planning", "cost-optimization"]
+tags: ["automation", "cost-optimization", "logistics", "offshore", "planning"]
 visibility: "public"
 language: "en"
 doc_id: "project_beelogic_rig_logistics_public"
+partner: "beelogic.io"
 ---
 
 ## Rig Logistics

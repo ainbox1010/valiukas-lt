@@ -2,12 +2,15 @@
 title: "Catering Supply Management Platform"
 slug: "projects/canteen-supply-management"
 content_type: "project"
+ownership: "partner"
+type: "systems"
 summary: "Web platform modernizing weekly catering product procurement and supplier selection."
 industry: "Catering / Food Operations"
-tags: ["web application", "procurement", "supplier management", "workflow automation"]
+tags: ["procurement", "supplier-management", "web-application", "workflow-automation"]
 visibility: "public"
 language: "en"
 doc_id: "project_beelogic_canteen_supply_management_public"
+partner: "beelogic.io"
 ---
 
 # Catering Supply Management Platform

@@ -2,12 +2,14 @@
 title: "Logistics Company — OCR & Shipping Document Automation"
 slug: "projects/logistics-ocr-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Machine learning-based OCR automation for shipping documents integrated into transport management systems."
 industry: "Logistics / Freight forwarding"
 visibility: "public"
 language: "en"
 doc_id: "project_logistics_ocr_public_v1"
-tags: ["logistics", "ocr", "machine-learning", "document-processing", "automation"]
+tags: ["automation", "document-processing", "logistics", "machine-learning", "ocr"]
 partner: "erobot.ai"
 ---
 

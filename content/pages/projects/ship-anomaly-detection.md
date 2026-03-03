@@ -2,12 +2,15 @@
 title: "Ship Anomaly Detection"
 slug: "projects/ship-anomaly-detection"
 content_type: "project"
+ownership: "partner"
+type: "ai"
 summary: "Maritime traffic intelligence platform for real-time anomaly alerts and early collision-risk detection."
 industry: "Maritime / Safety / Security"
-tags: ["maritime", "anomaly-detection", "deep-learning", "collision-risk", "traffic-intelligence"]
+tags: ["anomaly-detection", "collision-risk", "deep-learning", "maritime", "traffic-intelligence"]
 visibility: "public"
 language: "en"
 doc_id: "project_beelogic_ship_anomaly_detection_public"
+partner: "beelogic.io"
 ---
 
 ## Ship Anomaly Detection

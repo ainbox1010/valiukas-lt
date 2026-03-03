@@ -2,12 +2,14 @@
 title: "Telecom Operator — Equipment Documentation Automation"
 slug: "projects/telecom-equipment-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "RPA automation for equipment delivery and acceptance documentation in a large telecom operator."
 industry: "Telecommunications"
 visibility: "public"
 language: "en"
 doc_id: "project_telecom_equipment_automation_public_v1"
-tags: ["telecom", "rpa", "automation", "workflow", "process-optimization"]
+tags: ["automation", "process-optimization", "rpa", "telecom", "workflow"]
 partner: "erobot.ai"
 ---
 

@@ -4,7 +4,7 @@ export default function ContactPage() {
       <section className="hero">
         <h1>Contact</h1>
         <p>
-          If you're considering change at any level — from process clarity to
+          If you&apos;re considering change at any level — from process clarity to
           automation and AI implementation — send a short description of your
           situation.
         </p>

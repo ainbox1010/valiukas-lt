@@ -2,6 +2,8 @@
 title: "Investor Reporting Automation for Industrial Zone"
 slug: "projects/investor-reporting-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated investor data collection and regulatory reporting for a large industrial development organization."
 industry: "Public sector / Industrial development"
 visibility: "public"

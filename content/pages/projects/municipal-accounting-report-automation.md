@@ -2,12 +2,14 @@
 title: "Municipal Accounting Report Automation"
 slug: "projects/municipal-accounting-report-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated generation and distribution of recurring accounting reports for a large municipality."
 industry: "Public sector / Municipality"
 visibility: "public"
 language: "en"
 doc_id: "project_municipal_accounting_reports_public_v1"
-tags: ["public-sector", "rpa", "automation", "accounting", "reporting"]
+tags: ["accounting", "automation", "public-sector", "reporting", "rpa"]
 partner: "erobot.ai"
 ---
 

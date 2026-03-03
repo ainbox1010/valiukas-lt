@@ -2,12 +2,14 @@
 title: "Accounting Firm — Public Data Collection & Analytics Automation"
 slug: "projects/accounting-public-data-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated data collection and analytics from public sources for an outsourcing-based accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
 language: "en"
 doc_id: "project_accounting_public_data_public_v1"
-tags: ["accounting", "automation", "data-collection", "analytics", "workflow"]
+tags: ["accounting", "analytics", "automation", "data-collection", "workflow"]
 partner: "erobot.ai"
 ---
 

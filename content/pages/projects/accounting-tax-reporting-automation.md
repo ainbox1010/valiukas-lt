@@ -2,12 +2,14 @@
 title: "Accounting Firm — Tax & Reporting Automation"
 slug: "projects/accounting-tax-reporting-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automation of depreciation recalculation, tax cross-check reports, and regulatory submissions for a modern accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
 language: "en"
 doc_id: "project_accounting_tax_reporting_public_v1"
-tags: ["accounting", "automation", "rpa", "tax-reporting", "esignature"]
+tags: ["accounting", "automation", "esignature", "rpa", "tax-reporting"]
 partner: "erobot.ai"
 ---
 

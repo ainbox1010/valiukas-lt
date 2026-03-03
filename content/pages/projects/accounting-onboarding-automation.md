@@ -2,12 +2,14 @@
 title: "Accounting Firm — Customer Onboarding Automation"
 slug: "projects/accounting-onboarding-automation"
 content_type: "project"
+ownership: "partner"
+type: "automation"
 summary: "Automated onboarding workflow with document generation and digital signing for an accounting and tax advisory firm."
 industry: "Professional services / Accounting"
 visibility: "public"
 language: "en"
 doc_id: "project_accounting_onboarding_public_v1"
-tags: ["professional-services", "automation", "onboarding", "document-generation", "workflow"]
+tags: ["automation", "document-generation", "onboarding", "professional-services", "workflow"]
 partner: "erobot.ai"
 ---
 
