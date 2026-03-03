@@ -10,7 +10,7 @@ export default function ContactPage() {
         </p>
         <p>
           <a
-            href="mailto:ainbox1010@gmail.com?subject=Contact"
+            href="mailto:ai.inquiry7@gmail.com?subject=Contact"
             className="contact-email-link"
           >
             Just email me.

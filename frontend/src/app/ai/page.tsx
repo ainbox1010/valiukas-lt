@@ -27,14 +27,11 @@ const initialMessage: ChatMessage = {
 };
 
 const suggestedQuestions = [
-  "What do you work on?",
-  "How do you think about building products?",
-  "What are your core skills?",
-  "What kinds of problems do you enjoy solving?",
-  "Tell me about your background",
-  "What are you building now?",
-  "Who should work with you?",
-  "How can I contact the real you?",
+  "How would you design an AI-assisted automation system?",
+  "When should RPA be used instead of custom software?",
+  "How do you evaluate whether AI is actually needed?",
+  "How do you approach automation?",
+  "What is your background?",
 ];
 
 const STORAGE_KEY_MESSAGES = "ai_me_messages";
@@ -100,6 +97,7 @@ export default function AiMePage() {
     null
   );
   const [isHydrated, setIsHydrated] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const consumedPrefillRef = useRef<string | null>(null);
@@ -113,6 +111,8 @@ export default function AiMePage() {
         const parsed = JSON.parse(storedMessages) as ChatMessage[];
         if (Array.isArray(parsed) && parsed.length > 0) {
           setMessages(parsed);
+          const hasUserMessage = parsed.some((m) => m.role === "user");
+          if (hasUserMessage) setHasStarted(true);
         }
       } catch {
         // Ignore invalid storage.
@@ -195,8 +195,8 @@ export default function AiMePage() {
   }, [searchParams, inputValue, isSending]);
 
   const visibleSuggestions = useMemo(() => {
-    return suggestedQuestions;
-  }, []);
+    return hasStarted ? [] : suggestedQuestions;
+  }, [hasStarted]);
 
   const scrollToBottom = () => {
     const node = transcriptRef.current;
@@ -230,6 +230,7 @@ export default function AiMePage() {
       content: trimmed,
     };
     appendMessage(userMessage);
+    setHasStarted(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -294,26 +295,10 @@ export default function AiMePage() {
     <div className="section">
       <section className="hero">
         <h1>AI Me</h1>
-        <p>An AI shaped by my experience, thinking, and the work I’ve done.</p>
-        <div className="chat-status">
-          This is an AI representation, not a human chat.
-        </div>
+        <p>An AI shaped by my experience, thinking, and real project work.</p>
       </section>
 
       <section className="section chat-shell">
-        <div className="chat-suggestions">
-          {visibleSuggestions.map((label) => (
-            <button
-              key={label}
-              type="button"
-              onClick={() => void sendMessage(label)}
-              disabled={isSending}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
         <div ref={transcriptRef} className="chat-transcript">
           {messages.map((message) => (
             <div
@@ -328,7 +313,7 @@ export default function AiMePage() {
                 <div className="chat-actions">
                   <a
                     className="chat-action secondary"
-                    href="mailto:ainbox1010@gmail.com?subject=AI%20Me%20—%20question"
+                    href="mailto:ai.inquiry7@gmail.com?subject=AI%20Me%20—%20question"
                   >
                     Email me
                   </a>
@@ -374,7 +359,7 @@ export default function AiMePage() {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Ask a question..."
+            placeholder="Ask about product, process, or company systems — automation and AI included…"
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
             onKeyDown={handleKeyDown}
@@ -396,6 +381,21 @@ export default function AiMePage() {
               ? `Requests left: ${quota.remaining} out of ${quota.limit} today`
               : ""}
           </span>
+        </div>
+        <div className="chat-suggestions">
+          {visibleSuggestions.map((label) => (
+            <button
+              key={label}
+              type="button"
+              onClick={() => {
+                setInputValue(label);
+                requestAnimationFrame(() => inputRef.current?.focus());
+              }}
+              disabled={isSending}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </section>
     </div>
