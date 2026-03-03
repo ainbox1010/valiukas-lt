@@ -1,11 +1,11 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 type ChatSource = {
   doc_id?: string | null;
   title?: string | null;
+  slug?: string | null;
   section?: string | null;
   chunk_id?: string | null;
   score?: number | null;
@@ -89,7 +89,6 @@ function renderMessageContent(content: string) {
 }
 
 export default function AiMePage() {
-  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<ChatMessage[]>([initialMessage]);
   const [inputValue, setInputValue] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -179,24 +178,18 @@ export default function AiMePage() {
     }
   }, [isSending]);
 
+  // Prefill from URL ?q= (e.g. from "Ask AI Me about projects" link)
   useEffect(() => {
-    const query = searchParams?.get("q")?.trim();
-    if (!query || isSending) {
-      return;
-    }
-    if (consumedPrefillRef.current === query) {
-      return;
-    }
-    if (!inputValue) {
-      setInputValue(query);
-      consumedPrefillRef.current = query;
-      requestAnimationFrame(() => inputRef.current?.focus());
-    }
-  }, [searchParams, inputValue, isSending]);
+    if (isSending || typeof window === "undefined") return;
+    const query = new URLSearchParams(window.location.search).get("q")?.trim();
+    if (!query || consumedPrefillRef.current === query) return;
+    setInputValue(query);
+    consumedPrefillRef.current = query;
+    requestAnimationFrame(() => inputRef.current?.focus());
+  }, [isSending]);
 
-  const visibleSuggestions = useMemo(() => {
-    return hasStarted ? [] : suggestedQuestions;
-  }, [hasStarted]);
+  // Pills always visible so user can always click to send
+  const visibleSuggestions = suggestedQuestions;
 
   const scrollToBottom = () => {
     const node = transcriptRef.current;
@@ -296,6 +289,19 @@ export default function AiMePage() {
       <section className="hero">
         <h1>AI Me</h1>
         <p>An AI shaped by my experience, thinking, and real project work.</p>
+        <button
+          type="button"
+          onClick={() => {
+            localStorage.removeItem(STORAGE_KEY_MESSAGES);
+            setMessages([initialMessage]);
+            setInputValue("");
+            setHasStarted(false);
+          }}
+          className="chat-action secondary"
+          style={{ marginTop: 8, fontSize: 12 }}
+        >
+          Clear chat
+        </button>
       </section>
 
       <section className="section chat-shell">
@@ -327,7 +333,13 @@ export default function AiMePage() {
                   <div className="chat-sources-list">
                     {message.sources.map((source, index) => (
                       <div key={`${message.id}-source-${index}`}>
-                        <strong>{source.title ?? "Source"}</strong>
+                        <strong>
+                          {source.slug ? (
+                            <a href={`/${source.slug}`}>{source.title ?? "Source"}</a>
+                          ) : (
+                            source.title ?? "Source"
+                          )}
+                        </strong>
                         <div>
                           {source.doc_id ? `doc_id: ${source.doc_id}` : null}
                           {source.section ? ` · section: ${source.section}` : null}
@@ -355,21 +367,27 @@ export default function AiMePage() {
           ) : null}
         </div>
 
-        <form onSubmit={handleSubmit} className="chat-input-row">
+        <form
+          onSubmit={handleSubmit}
+          className="chat-input-row"
+          style={{ isolation: "isolate" }}
+        >
           <input
             ref={inputRef}
             type="text"
             placeholder="Ask about product, process, or company systems — automation and AI included…"
             value={inputValue}
-            onChange={(event) => setInputValue(event.target.value)}
+            onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}
             disabled={isSending}
+            autoComplete="off"
             autoFocus
+            aria-label="Message"
           />
           <button
             type="submit"
             disabled={!canSend}
-            onMouseDown={(event) => event.preventDefault()}
+            aria-label="Send message"
           >
             {isSending ? "Sending…" : "Send"}
           </button>
@@ -382,14 +400,16 @@ export default function AiMePage() {
               : ""}
           </span>
         </div>
-        <div className="chat-suggestions">
+        <div className="chat-suggestions" style={{ isolation: "isolate" }}>
           {visibleSuggestions.map((label) => (
             <button
               key={label}
               type="button"
-              onClick={() => {
-                setInputValue(label);
-                requestAnimationFrame(() => inputRef.current?.focus());
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (isSending) return;
+                void sendMessage(label);
               }}
               disabled={isSending}
             >

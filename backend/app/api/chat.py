@@ -88,6 +88,7 @@ def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
             {
                 "doc_id": chunk.doc_id,
                 "title": chunk.title,
+                "slug": chunk.slug,
                 "section": chunk.section,
                 "chunk_id": chunk.chunk_id,
                 "score": chunk.score,

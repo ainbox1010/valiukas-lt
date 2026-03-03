@@ -29,6 +29,40 @@ def get_embedding(text: str) -> list[float]:
     return embedding
 
 
+def get_embeddings_batch(
+    texts: list[str],
+    batch_size: int = 64,
+) -> list[list[float]]:
+    """
+    Embed multiple texts in batches. No caching (for ingestion pipeline).
+    Retries on 429 with exponential backoff.
+    """
+    import time
+
+    settings = get_settings()
+    client = _get_client(settings.OPENAI_API_KEY)
+    results: list[list[float]] = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i : i + batch_size]
+        for attempt in range(5):
+            try:
+                response = client.embeddings.create(
+                    model=settings.OPENAI_EMBED_MODEL,
+                    input=batch,
+                )
+                for d in response.data:
+                    results.append(d.embedding)
+                break
+            except Exception as e:
+                if "429" in str(e) or "rate" in str(e).lower():
+                    wait = 2 ** attempt
+                    logger.warning("Rate limited, retrying in %ds", wait)
+                    time.sleep(wait)
+                else:
+                    raise
+    return results
+
+
 def create_response(
     system_prompt: str, user_prompt: str, model: str, api_key: str
 ) -> str:

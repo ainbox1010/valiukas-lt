@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 type ChatRequestBody = {
   message?: string;
+  visitor_id?: string;
 };
 
 export async function POST(request: Request) {
@@ -32,7 +33,10 @@ export async function POST(request: Request) {
     const response = await fetch(`${backendUrl}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: body.message }),
+      body: JSON.stringify({
+        message: body.message,
+        visitor_id: body.visitor_id ?? undefined,
+      }),
     });
 
     const data = await response.json();
