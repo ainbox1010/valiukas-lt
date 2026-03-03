@@ -6,10 +6,10 @@ ownership: "self"
 type: "ai"
 summary: "Deterministic, explainable crypto token risk evaluation system built using multi-agent LLM orchestration."
 industry: "FinTech / AI / Crypto Infrastructure"
-tags: ["agentic-systems", "crypto-analysis", "llm-orchestration", "rag", "risk-scoring"]
 visibility: "public"
 language: "en"
 doc_id: "project_inblock_ai_public"
+tags: ["agentic-systems", "crypto-analysis", "llm-orchestration", "rag", "risk-scoring"]
 ---
 
 ## InBlock AI

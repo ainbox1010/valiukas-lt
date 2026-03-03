@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated generation and distribution of recurring accounting reports for a large municipality."
 industry: "Public sector / Municipality"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_municipal_accounting_reports_public_v1"
 tags: ["accounting", "automation", "public-sector", "reporting", "rpa"]
-partner: "erobot.ai"
 ---
 
 ## Municipal Accounting Report Automation

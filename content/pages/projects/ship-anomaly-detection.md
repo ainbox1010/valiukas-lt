@@ -6,11 +6,11 @@ ownership: "partner"
 type: "ai"
 summary: "Maritime traffic intelligence platform for real-time anomaly alerts and early collision-risk detection."
 industry: "Maritime / Safety / Security"
-tags: ["anomaly-detection", "collision-risk", "deep-learning", "maritime", "traffic-intelligence"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_ship_anomaly_detection_public"
-partner: "beelogic.io"
+tags: ["anomaly-detection", "collision-risk", "deep-learning", "maritime", "traffic-intelligence"]
 ---
 
 ## Ship Anomaly Detection

@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated data collection and analytics from public sources for an outsourcing-based accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_accounting_public_data_public_v1"
 tags: ["accounting", "analytics", "automation", "data-collection", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Accounting Firm — Public Data Collection & Analytics Automation

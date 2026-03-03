@@ -7,10 +7,10 @@ type: "automation"
 summary: "Digital case management and public reporting systems for gender-based violence and disability services."
 industry: "Public sector / Municipal government"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_municipal_gbv_pwd_public_v1"
 tags: ["case-management", "dashboards", "digital-transformation", "public-sector", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Municipal Digitalization: GBV & Disability Services

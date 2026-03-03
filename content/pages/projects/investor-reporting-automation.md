@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated investor data collection and regulatory reporting for a large industrial development organization."
 industry: "Public sector / Industrial development"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_investor_reporting_automation_public_v1"
 tags: ["automation", "public-sector", "reporting", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Investor Reporting Automation

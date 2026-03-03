@@ -6,11 +6,11 @@ ownership: "partner"
 type: "systems"
 summary: "Custom web application for managing access control, employee movement, and logistics in factory environments."
 industry: "Industrial / Manufacturing / Logistics"
-tags: ["access-control", "factory-automation", "logistics", "security", "workforce-management"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_accessguard_public"
-partner: "beelogic.io"
+tags: ["access-control", "factory-automation", "logistics", "security", "workforce-management"]
 ---
 
 ## AccessGuard

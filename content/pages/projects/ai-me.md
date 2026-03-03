@@ -5,13 +5,13 @@ content_type: "project"
 ownership: "self"
 type: "ai"
 summary: "A structured, citation-grounded AI website assistant built for controlled deployment under real-world constraints."
-status: "live"
-year: 2026
 industry: "Professional services"
-tags: ["ai-architecture", "fastapi", "nextjs", "openai", "pinecone", "rag", "website-assistant"]
 visibility: "public"
 language: "en"
 doc_id: "project_ai_me_public_v5"
+tags: ["ai-architecture", "fastapi", "nextjs", "openai", "pinecone", "rag", "website-assistant"]
+status: "live"
+year: "2026"
 ---
 
 ## Overview

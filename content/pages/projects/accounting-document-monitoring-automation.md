@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated monitoring and reminder system for client document submissions in a growing accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_accounting_document_monitoring_public_v1"
 tags: ["automation", "cloud-integration", "professional-services", "rpa", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Accounting Firm — Document Monitoring Automation

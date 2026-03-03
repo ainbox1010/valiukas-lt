@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automation of invoice data transfer between financial systems for a large multi-location fitness operator."
 industry: "Fitness / Retail / Services"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_fitness_invoice_automation_public_v1"
 tags: ["automation", "finance", "invoice-processing", "rpa", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Multi-Location Fitness Chain — Invoice Automation

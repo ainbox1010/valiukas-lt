@@ -7,10 +7,10 @@ type: "ai"
 summary: "More than 10 robotic workflows deployed in a major European capital municipality, delivering measurable time savings and AI-assisted document automation."
 industry: "Public sector / Municipality"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_large_capital_municipality_rpa_public_v1"
 tags: ["ai", "automation", "public-sector", "rpa", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Large Capital Municipality — RPA & AI Automation

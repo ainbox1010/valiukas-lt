@@ -6,11 +6,11 @@ ownership: "partner"
 type: "systems"
 summary: "Web platform modernizing weekly catering product procurement and supplier selection."
 industry: "Catering / Food Operations"
-tags: ["procurement", "supplier-management", "web-application", "workflow-automation"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_canteen_supply_management_public"
-partner: "beelogic.io"
+tags: ["procurement", "supplier-management", "web-application", "workflow-automation"]
 ---
 
 # Catering Supply Management Platform

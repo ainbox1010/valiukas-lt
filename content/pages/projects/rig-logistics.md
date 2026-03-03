@@ -6,11 +6,11 @@ ownership: "partner"
 type: "automation"
 summary: "Advanced logistics management system for offshore oil platform deliveries."
 industry: "Energy / Offshore / Logistics"
-tags: ["automation", "cost-optimization", "logistics", "offshore", "planning"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_rig_logistics_public"
-partner: "beelogic.io"
+tags: ["automation", "cost-optimization", "logistics", "offshore", "planning"]
 ---
 
 ## Rig Logistics

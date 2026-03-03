@@ -7,10 +7,10 @@ type: "automation"
 summary: "Mobile app and automated data processing for a healthcare provider serving patients at home."
 industry: "Healthcare"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_home_healthcare_mobile_public_v1"
 tags: ["automation", "data-processing", "healthcare", "mobile-app", "qr-identification"]
-partner: "erobot.ai"
 ---
 
 ## Home Healthcare Provider — Mobile Data Automation

@@ -6,11 +6,11 @@ ownership: "partner"
 type: "ai"
 summary: "AI-powered personnel transportation and accommodation management system for offshore and onshore operations."
 industry: "Energy / Offshore / Logistics"
-tags: ["ai", "compliance-monitoring", "offshore-operations", "personnel-logistics", "transport-optimization"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_travel_accommodation_public"
-partner: "beelogic.io"
+tags: ["ai", "compliance-monitoring", "offshore-operations", "personnel-logistics", "transport-optimization"]
 ---
 
 ## Travel and Accommodation Management

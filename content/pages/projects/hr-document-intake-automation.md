@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automation of high-volume document intake using OCR and Microsoft workflow technologies."
 industry: "HR services / Professional services"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_hr_document_intake_public_v1"
 tags: ["automation", "hr", "microsoft", "ocr", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## HR Services Company — Document Intake Automation

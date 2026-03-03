@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automation of depreciation recalculation, tax cross-check reports, and regulatory submissions for a modern accounting firm."
 industry: "Professional services / Accounting"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_accounting_tax_reporting_public_v1"
 tags: ["accounting", "automation", "esignature", "rpa", "tax-reporting"]
-partner: "erobot.ai"
 ---
 
 ## Accounting Firm — Tax & Reporting Automation

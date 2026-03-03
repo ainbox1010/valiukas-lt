@@ -6,11 +6,11 @@ ownership: "partner"
 type: "ai"
 summary: "Web-based system for real-time factory monitoring, sensor tracking, and anomaly alerting."
 industry: "Industrial / Manufacturing"
-tags: ["anomaly-detection", "factory-monitoring", "maintenance", "real-time-analytics", "sensors"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_factorysense_public"
-partner: "beelogic.io"
+tags: ["anomaly-detection", "factory-monitoring", "maintenance", "real-time-analytics", "sensors"]
 ---
 
 ## FactorySense

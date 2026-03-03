@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated onboarding workflow with document generation and digital signing for an accounting and tax advisory firm."
 industry: "Professional services / Accounting"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_accounting_onboarding_public_v1"
 tags: ["automation", "document-generation", "onboarding", "professional-services", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Accounting Firm — Customer Onboarding Automation

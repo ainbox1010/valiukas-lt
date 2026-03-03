@@ -7,10 +7,10 @@ type: "automation"
 summary: "RPA automation for equipment delivery and acceptance documentation in a large telecom operator."
 industry: "Telecommunications"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_telecom_equipment_automation_public_v1"
 tags: ["automation", "process-optimization", "rpa", "telecom", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Telecom Operator — Equipment Documentation Automation

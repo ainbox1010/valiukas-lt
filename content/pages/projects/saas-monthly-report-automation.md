@@ -7,10 +7,10 @@ type: "automation"
 summary: "Automated data extraction and monthly reporting workflow for a fast-growing SaaS company."
 industry: "SaaS / Event technology"
 visibility: "public"
+partner: "erobot.ai"
 language: "en"
 doc_id: "project_saas_monthly_report_public_v1"
 tags: ["automation", "data-extraction", "reporting", "saas", "workflow"]
-partner: "erobot.ai"
 ---
 
 ## Event-Tech Startup — Monthly Report Automation

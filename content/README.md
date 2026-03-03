@@ -30,3 +30,8 @@ doc_id: "about_v1"
 - Do not include `status` in frontmatter.
 - Keep attribution inside markdown body (content-driven), not UI-driven.
 - If a field has no value, remove the key from frontmatter.
+
+## Backend Content Contract
+For RAG ingestion and retrieval, see `backend_implementation_plan.md` §1 (Content Contract).
+Required fields: `doc_id`, `slug`, `title`, `content_type`, `visibility`.
+Project-specific: `summary`, `type`, `industry`, `partner` (when applicable), `ownership`.

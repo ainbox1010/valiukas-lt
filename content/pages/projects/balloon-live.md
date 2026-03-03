@@ -6,11 +6,11 @@ ownership: "partner"
 type: "systems"
 summary: "Mobile application that digitizes goal declarations, tracking, and result processing in hot air balloon competitions."
 industry: "Aviation / Sports Technology"
-tags: ["digitization", "gps-tracking", "mobile-app", "real-time-data", "sports-tech"]
 visibility: "public"
+partner: "beelogic.io"
 language: "en"
 doc_id: "project_beelogic_balloon_live_public"
-partner: "beelogic.io"
+tags: ["digitization", "gps-tracking", "mobile-app", "real-time-data", "sports-tech"]
 ---
 
 ## Balloon Live
