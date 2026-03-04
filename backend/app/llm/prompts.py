@@ -13,6 +13,8 @@ Be polite, calm, and factual.
 
 def _format_chunk(chunk: ContextChunk) -> str:
     metadata = []
+    if chunk.slug:
+        metadata.append(f"slug: {chunk.slug}")
     if chunk.title:
         metadata.append(f"title: {chunk.title}")
     if chunk.section:
@@ -38,7 +40,8 @@ def build_prompt(message: str, chunks: list[ContextChunk]) -> tuple[str, str]:
         f"{message}\n\n"
         "Answer based only on the sources above. "
         "If the answer is not in the sources, say: "
-        "\"This isn't in my sources.\""
+        "\"This isn't in my sources.\" "
+        "When listing projects, list each unique project once (by slug); do not list the same project twice."
     )
 
     return SYSTEM_PROMPT, user_prompt

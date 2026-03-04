@@ -98,6 +98,7 @@ export default function AiMePage() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const consumedPrefillRef = useRef<string | null>(null);
 
@@ -198,7 +199,12 @@ export default function AiMePage() {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    const last = messages[messages.length - 1];
+    if (last?.role === "assistant" && lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView({ block: "start", behavior: "smooth" });
+    } else {
+      scrollToBottom();
+    }
   }, [messages]);
 
   const appendMessage = (message: ChatMessage) => {
@@ -206,7 +212,6 @@ export default function AiMePage() {
       const next = [...prev, message];
       return next;
     });
-    requestAnimationFrame(scrollToBottom);
   };
 
   const sendMessage = async (text: string) => {
@@ -306,9 +311,10 @@ export default function AiMePage() {
 
       <section className="section chat-shell">
         <div ref={transcriptRef} className="chat-transcript">
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <div
               key={message.id}
+              ref={index === messages.length - 1 ? lastMessageRef : undefined}
               className={`chat-message ${message.role}`}
             >
               <div className="chat-role">

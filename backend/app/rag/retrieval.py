@@ -12,6 +12,22 @@ logger = get_logger(__name__)
 
 
 PROJECT_NAMESPACES = ("projects_public", "projects_rag", "dev_ai_me")
+PROJECT_ONLY_NAMESPACES = ("projects_public", "projects_rag")
+
+# Partner names as stored in metadata -> query keywords (lowercase)
+PARTNER_FILTER_MAP = {
+    "erobot.ai": ["erobot", "erobot.ai"],
+    "beelogic.io": ["beelogic", "beelogic.io"],
+}
+
+
+def _detect_partner_filter(message: str) -> str | None:
+    """If query clearly implies a partner filter, return the partner value."""
+    msg_lower = message.lower()
+    for partner, keywords in PARTNER_FILTER_MAP.items():
+        if any(kw in msg_lower for kw in keywords):
+            return partner
+    return None
 
 
 @dataclass
@@ -73,16 +89,26 @@ def retrieve_context(message: str) -> list[ContextChunk]:
 
     embedding = get_embedding(message)
     index = get_pinecone_index()
+    partner_filter = _detect_partner_filter(message)
+    metadata_filter = (
+        {"partner": {"$eq": partner_filter}}
+        if partner_filter
+        else None
+    )
 
     all_matches: list = []
     for namespace in PROJECT_NAMESPACES:
         try:
-            query_result = index.query(
+            query_kwargs = dict(
                 vector=embedding,
                 top_k=50,
                 include_metadata=True,
                 namespace=namespace,
             )
+            # Apply partner filter only to project namespaces (CV has no partner)
+            if metadata_filter and namespace in PROJECT_ONLY_NAMESPACES:
+                query_kwargs["filter"] = metadata_filter
+            query_result = index.query(**query_kwargs)
             matches = query_result.get("matches", []) if isinstance(query_result, dict) else query_result.matches
             all_matches.extend(matches)
         except Exception as e:
@@ -116,8 +142,8 @@ def retrieve_context(message: str) -> list[ContextChunk]:
         )
 
     chunks = _dedupe([chunk for chunk in chunks if chunk.text])
-    # Dedupe by slug for broad coverage (list-all queries); allow 2 chunks per project for depth
-    chunks = _dedupe_by_slug(chunks, max_per_slug=2)[:24]
+    # One chunk per slug to avoid duplicates (public vs RAG) in list answers
+    chunks = _dedupe_by_slug(chunks, max_per_slug=1)[:24]
 
     cache_set_json(
         cache,
