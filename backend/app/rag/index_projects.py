@@ -4,6 +4,7 @@ Task 2 — Pinecone ingestion pipeline for projects.
 Upserts:
 - content/pages/projects/*.md → namespace projects_public
 - content/rag/projects/*.md → namespace projects_rag
+- content/rag/general/*.md → namespace projects_rag (source_type=rag, slug as-is e.g. general/tomas-approach)
 
 Future: content/internal/*.md will be added (not in current scope).
 
@@ -124,6 +125,34 @@ def load_rag_projects(base: Path, public_by_slug: dict[str, dict]) -> list[tuple
     return result
 
 
+def load_rag_general(base: Path) -> list[tuple[Path, dict, str]]:
+    """Load general RAG content (e.g. methodology). Returns [(path, metadata, body), ...].
+    Slugs stay as-is (e.g. general/tomas-approach), no projects/ prefix."""
+    general_dir = base / "content/rag/general"
+    if not general_dir.exists():
+        return []
+    result: list[tuple[Path, dict, str]] = []
+    for f in sorted(general_dir.glob("*.md")):
+        content = f.read_text(encoding="utf-8")
+        data, body = parse_frontmatter(content)
+        slug = (data.get("slug") or f"general/{f.stem}").strip()
+        meta = {
+            "slug": slug,
+            "title": data.get("title") or "",
+            "summary": data.get("summary") or "",
+            "type": data.get("type") or "",
+            "industry": data.get("industry") or "",
+            "ownership": data.get("ownership") or "self",
+            "partner": data.get("partner") or "",
+            "doc_id": data.get("doc_id") or "",
+            "visibility": data.get("visibility") or "rag",
+            "tags": data.get("tags") or [],
+            "language": data.get("language") or "en",
+        }
+        result.append((f, meta, body))
+    return result
+
+
 def build_doc_text(title: str, summary: str, body: str) -> str:
     """Build full document text for chunking (no YAML)."""
     parts = []
@@ -147,7 +176,7 @@ def collect_vectors(
     """
     public_by_slug = load_public_projects(base)
     public_files = list((base / "content/pages/projects").glob("*.md")) if (base / "content/pages/projects").exists() else []
-    rag_items = load_rag_projects(base, public_by_slug)
+    rag_items = load_rag_projects(base, public_by_slug) + load_rag_general(base)
 
     vectors: list[dict] = []
     public_slugs: set[str] = set()

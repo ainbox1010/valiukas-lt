@@ -28,7 +28,7 @@ const initialMessage: ChatMessage = {
 
 const suggestedQuestions = [
   "How would you design an AI-assisted automation system?",
-  "When should RPA be used instead of custom software?",
+  "How do you decide between RPA and custom software?",
   "How do you evaluate whether AI is actually needed?",
   "How do you approach automation?",
   "What is your background?",
@@ -51,41 +51,170 @@ const getVisitorId = () => {
   return generated;
 };
 
-function renderMessageContent(content: string) {
-  const lines = content.split("\n");
+function renderInlineMarkdown(text: string, keyPrefix: string) {
+  const regex =
+    /\*\*(.+?)\*\*|__(.+?)__|`([^`]+)`|\[([^\]]*)\]\(([^)]+)\)|\*([^*]+?)\*|_([^_]+)_|~~(.+?)~~/g;
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let match;
+  let keyIdx = 0;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    if (match[1]) {
+      parts.push(<strong key={`${keyPrefix}-${keyIdx++}`}>{match[1]}</strong>);
+    } else if (match[2]) {
+      parts.push(<strong key={`${keyPrefix}-${keyIdx++}`}>{match[2]}</strong>);
+    } else if (match[3]) {
+      parts.push(
+        <code key={`${keyPrefix}-${keyIdx++}`} className="chat-inline-code">
+          {match[3]}
+        </code>
+      );
+    } else if (match[4] !== undefined && match[5]) {
+      parts.push(
+        <a
+          key={`${keyPrefix}-${keyIdx++}`}
+          href={match[5]}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {match[4] || match[5]}
+        </a>
+      );
+    } else if (match[6]) {
+      parts.push(<em key={`${keyPrefix}-${keyIdx++}`}>{match[6]}</em>);
+    } else if (match[7]) {
+      parts.push(<em key={`${keyPrefix}-${keyIdx++}`}>{match[7]}</em>);
+    } else if (match[8]) {
+      parts.push(<del key={`${keyPrefix}-${keyIdx++}`}>{match[8]}</del>);
+    }
+    lastIndex = regex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return <Fragment>{parts}</Fragment>;
+}
 
-  return lines.map((line, lineIndex) => {
-    const segments = line.split(URL_PATTERN);
+function renderLine(line: string, lineIndex: number) {
+  const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+  if (headingMatch) {
+    const level = Math.min(headingMatch[1].length, 6);
+    const Tag = `h${level}` as keyof JSX.IntrinsicElements;
     return (
-      <Fragment key={`line-${lineIndex}`}>
-        {segments.map((segment, segmentIndex) => {
-          if (!segment.match(URL_PATTERN)) {
-            return (
-              <Fragment key={`text-${lineIndex}-${segmentIndex}`}>
-                {segment}
-              </Fragment>
-            );
-          }
+      <Tag key={lineIndex} className="chat-heading">
+        {renderInlineMarkdown(headingMatch[2], `line-${lineIndex}`)}
+      </Tag>
+    );
+  }
 
-          const trailingPunctuationMatch = segment.match(/[.,!?;:)]+$/);
-          const trailingPunctuation = trailingPunctuationMatch?.[0] ?? "";
-          const href = trailingPunctuation
-            ? segment.slice(0, -trailingPunctuation.length)
-            : segment;
+  if (/^[-*_]{3,}\s*$/.test(line)) {
+    return <hr key={lineIndex} className="chat-hr" />;
+  }
 
+  const blockquoteMatch = line.match(/^>\s?(.*)$/);
+  if (blockquoteMatch) {
+    return (
+      <blockquote key={lineIndex} className="chat-blockquote">
+        {renderInlineMarkdown(blockquoteMatch[1], `line-${lineIndex}`)}
+      </blockquote>
+    );
+  }
+
+  const ulMatch = line.match(/^[\-\*\+]\s+(.*)$/);
+  if (ulMatch) {
+    return (
+      <li key={lineIndex} className="chat-list-item">
+        {renderInlineMarkdown(ulMatch[1], `line-${lineIndex}`)}
+      </li>
+    );
+  }
+
+  const olMatch = line.match(/^\d+\.\s+(.*)$/);
+  if (olMatch) {
+    return (
+      <li key={lineIndex} className="chat-list-item chat-list-item-ordered">
+        {renderInlineMarkdown(olMatch[1], `line-${lineIndex}`)}
+      </li>
+    );
+  }
+
+  const segments = line.split(URL_PATTERN);
+  return (
+    <Fragment key={`line-${lineIndex}`}>
+      {segments.map((segment, segmentIndex) => {
+        if (!segment.match(URL_PATTERN)) {
           return (
-            <Fragment key={`url-${lineIndex}-${segmentIndex}`}>
-              <a href={href} target="_blank" rel="noreferrer">
-                {href}
-              </a>
-              {trailingPunctuation}
+            <Fragment key={`text-${lineIndex}-${segmentIndex}`}>
+              {renderInlineMarkdown(segment, `line-${lineIndex}-${segmentIndex}`)}
             </Fragment>
           );
-        })}
-        {lineIndex < lines.length - 1 ? <br /> : null}
-      </Fragment>
-    );
-  });
+        }
+        const trailingPunctuationMatch = segment.match(/[.,!?;:)]+$/);
+        const trailingPunctuation = trailingPunctuationMatch?.[0] ?? "";
+        const href = trailingPunctuation
+          ? segment.slice(0, -trailingPunctuation.length)
+          : segment;
+        return (
+          <Fragment key={`url-${lineIndex}-${segmentIndex}`}>
+            <a href={href} target="_blank" rel="noreferrer">
+              {href}
+            </a>
+            {trailingPunctuation}
+          </Fragment>
+        );
+      })}
+    </Fragment>
+  );
+}
+
+function renderMessageContent(content: string) {
+  const lines = content.split("\n");
+  const elements: JSX.Element[] = [];
+  let listBuffer: JSX.Element[] = [];
+  let listType: "ul" | "ol" | null = null;
+
+  const flushList = () => {
+    if (listBuffer.length > 0 && listType) {
+      const Tag = listType;
+      elements.push(
+        <Tag key={`list-${elements.length}`} className="chat-list">
+          {listBuffer}
+        </Tag>
+      );
+      listBuffer = [];
+      listType = null;
+    }
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const ulMatch = line.match(/^[\-\*\+]\s+/);
+    const olMatch = line.match(/^\d+\.\s+/);
+
+    if (ulMatch) {
+      if (listType === "ol") flushList();
+      listType = "ul";
+      listBuffer.push(renderLine(line, i) as JSX.Element);
+    } else if (olMatch) {
+      if (listType === "ul") flushList();
+      listType = "ol";
+      listBuffer.push(renderLine(line, i) as JSX.Element);
+    } else {
+      flushList();
+      elements.push(
+        <Fragment key={`line-${i}`}>
+          {renderLine(line, i)}
+          {i < lines.length - 1 ? <br /> : null}
+        </Fragment>
+      );
+    }
+  }
+  flushList();
+
+  return <>{elements}</>;
 }
 
 export default function AiMePage() {
@@ -187,6 +316,10 @@ export default function AiMePage() {
     setInputValue(query);
     consumedPrefillRef.current = query;
     requestAnimationFrame(() => inputRef.current?.focus());
+    // Clear ?q= from URL so refresh shows empty input
+    const url = new URL(window.location.href);
+    url.searchParams.delete("q");
+    window.history.replaceState({}, "", url.pathname + url.search);
   }, [isSending]);
 
   // Pills always visible so user can always click to send
@@ -340,7 +473,7 @@ export default function AiMePage() {
                     {message.sources.map((source, index) => (
                       <div key={`${message.id}-source-${index}`}>
                         <strong>
-                          {source.slug ? (
+                          {source.slug && source.slug.startsWith("projects/") ? (
                             <a href={`/${source.slug}`}>{source.title ?? "Source"}</a>
                           ) : (
                             source.title ?? "Source"
