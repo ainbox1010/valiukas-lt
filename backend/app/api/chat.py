@@ -68,9 +68,9 @@ def _resolve_identifier(
 
 def _refusal_message() -> str:
     return (
-        "This assistant is focused on Tomas and his work. "
-        "I can help with questions about his experience, projects, "
-        "or how he approaches problems."
+        "This assistant is focused my experience and my work. "
+        "I can help with questions about my projects, "
+        "or how I approach product development."
     )
 
 

@@ -23,7 +23,7 @@ const initialMessage: ChatMessage = {
   id: "init",
   role: "assistant",
   content:
-    "Hi — I’m an AI representation of Tomas.\nI answer based on his experience, projects, and documented thinking.\nHow can I help?",
+    "I represent Tomas's work and thinking.\nAsk about projects, architecture decisions, or automation strategy.",
 };
 
 const suggestedQuestions = [
@@ -226,6 +226,7 @@ export default function AiMePage() {
   );
   const [isHydrated, setIsHydrated] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -331,10 +332,21 @@ export default function AiMePage() {
     node.scrollTop = node.scrollHeight;
   };
 
+  const scrollToLastMessageInTranscript = () => {
+    const container = transcriptRef.current;
+    const child = lastMessageRef.current;
+    if (!container || !child) return;
+    const containerRect = container.getBoundingClientRect();
+    const childRect = child.getBoundingClientRect();
+    const offset = childRect.top - containerRect.top;
+    const targetScrollTop = container.scrollTop + offset;
+    container.scrollTo({ top: targetScrollTop, behavior: "smooth" });
+  };
+
   useEffect(() => {
     const last = messages[messages.length - 1];
     if (last?.role === "assistant" && lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ block: "start", behavior: "smooth" });
+      requestAnimationFrame(() => scrollToLastMessageInTranscript());
     } else {
       scrollToBottom();
     }
@@ -423,26 +435,16 @@ export default function AiMePage() {
   };
 
   return (
-    <div className="section">
+    <div className="section ai-me-page">
       <section className="hero">
         <h1>AI Me</h1>
         <p>An AI shaped by my experience, thinking, and real project work.</p>
-        <button
-          type="button"
-          onClick={() => {
-            localStorage.removeItem(STORAGE_KEY_MESSAGES);
-            setMessages([initialMessage]);
-            setInputValue("");
-            setHasStarted(false);
-          }}
-          className="chat-action secondary"
-          style={{ marginTop: 8, fontSize: 12 }}
-        >
-          Clear chat
-        </button>
       </section>
 
       <section className="section chat-shell">
+        <p className="chat-scope-notice">
+          This is not a general-purpose assistant. It answers <span className="chat-scope-only">only</span> questions related to my professional background, projects, and approach to automation and AI, using documented knowledge sources.
+        </p>
         <div ref={transcriptRef} className="chat-transcript">
           {messages.map((message, index) => (
             <div
@@ -538,7 +540,49 @@ export default function AiMePage() {
               ? `Requests left: ${quota.remaining} out of ${quota.limit} today`
               : ""}
           </span>
+          {hasStarted ? (
+            <button
+              type="button"
+              onClick={() => setShowClearConfirm(true)}
+              className="chat-action secondary"
+              style={{ marginLeft: "auto", fontSize: 12 }}
+            >
+              Clear chat
+            </button>
+          ) : null}
         </div>
+        {showClearConfirm ? (
+          <div className="chat-clear-overlay" role="dialog" aria-modal="true" aria-labelledby="chat-clear-title">
+            <div className="chat-clear-modal">
+              <h2 id="chat-clear-title" className="chat-clear-title">Clear chat?</h2>
+              <p className="chat-clear-text">
+                All messages will be permanently lost.
+              </p>
+              <div className="chat-clear-actions">
+                <button
+                  type="button"
+                  onClick={() => setShowClearConfirm(false)}
+                  className="chat-action secondary"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    localStorage.removeItem(STORAGE_KEY_MESSAGES);
+                    setMessages([initialMessage]);
+                    setInputValue("");
+                    setHasStarted(false);
+                    setShowClearConfirm(false);
+                  }}
+                  className="chat-action chat-action-destructive"
+                >
+                  Clear chat
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
         <div className="chat-suggestions" style={{ isolation: "isolate" }}>
           {visibleSuggestions.map((label) => (
             <button

@@ -28,3 +28,4 @@ uvicorn app.main:app --reload
 ## Notes
 - Set `BACKEND_URL` in `frontend` environment for the `/api/chat` proxy.
 - Do not commit `.env` files or secrets.
+- Implementation decisions and session notes: see `docs/implementation-notes.md`.

@@ -23,5 +23,15 @@ def is_in_scope(message: str) -> bool:
         "projects",
         "work",
         "background",
+        "this site",
+        "this website",
+        "dev stack",
+        "tech stack",
+        "architecture",
+        "stack",
     ]
-    return any(keyword in lowered for keyword in keywords)
+    if any(kw in lowered for kw in keywords):
+        return True
+    if re.search(r"how\s+(was|is)\s+.*(built|made|created)", lowered):
+        return True
+    return False

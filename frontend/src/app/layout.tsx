@@ -5,6 +5,10 @@ export const metadata = {
   title: "Tomas Valiukas — AI & IT Projects",
   description:
     "Personal website for Tomas Valiukas: services, projects, and an AI agent grounded in trusted sources.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
 };
 
 const navLinks = [

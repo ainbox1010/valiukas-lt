@@ -208,6 +208,14 @@ a:hover {
   padding: 36px 0;
 }
 
+.ai-me-page .hero {
+  padding-bottom: 24px;
+}
+
+.ai-me-page .section.chat-shell {
+  padding-top: 12px;
+}
+
 .section h2 {
   font-size: 22px;
   margin-bottom: 12px;
@@ -820,6 +828,21 @@ a:hover {
   gap: 16px;
 }
 
+.chat-scope-notice {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.chat-scope-notice .chat-scope-only {
+  text-transform: uppercase;
+}
+
 .chat-suggestions {
   display: grid;
   gap: 10px;
@@ -962,6 +985,54 @@ a:hover {
   align-items: center;
 }
 
+.chat-clear-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.chat-clear-modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 360px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.chat-clear-title {
+  font-size: 1.1em;
+  margin: 0 0 10px;
+}
+
+.chat-clear-text {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0 0 20px;
+  line-height: 1.5;
+}
+
+.chat-clear-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.chat-action-destructive {
+  border: 1px solid #991b1b;
+  color: #991b1b;
+  background: transparent;
+}
+
+.chat-action-destructive:hover {
+  border-color: #b91c1c;
+  color: #b91c1c;
+}
+
 .chat-contact-row {
   margin-top: 8px;
 }
@@ -1046,11 +1117,15 @@ a:hover {
   color: var(--accent);
   font-size: 13px;
   font-weight: 600;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .chat-action.secondary {
   border-color: var(--border);
   color: var(--text);
+  background: transparent;
 }
 
 .chat-action-separator {
