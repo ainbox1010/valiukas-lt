@@ -11,7 +11,7 @@ from app.rag.pinecone_store import get_pinecone_index
 logger = get_logger(__name__)
 
 
-PROJECT_NAMESPACES = ("projects_public", "projects_rag")
+PROJECT_NAMESPACES = ("projects_public", "projects_rag", "dev_ai_me")
 
 
 @dataclass
