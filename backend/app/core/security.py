@@ -29,6 +29,12 @@ def is_in_scope(message: str) -> bool:
         "tech stack",
         "architecture",
         "stack",
+        "partner",
+        "partners",
+        "erobot",
+        "beelogic",
+        "darius",
+        "gudaciauskas",
     ]
     if any(kw in lowered for kw in keywords):
         return True

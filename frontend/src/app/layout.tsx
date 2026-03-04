@@ -43,8 +43,13 @@ export default function RootLayout({
         </header>
         <main className="container">{children}</main>
         <footer className="footer">
-          <div className="container">
+          <div className="container footer-inner">
             <div>AI that works. <Link href="/ai">Ask instead of browsing.</Link></div>
+            <div className="footer-copyright">
+              © 2026 Tomas Valiukas
+              <br />
+              All rights reserved.
+            </div>
           </div>
         </footer>
       </body>

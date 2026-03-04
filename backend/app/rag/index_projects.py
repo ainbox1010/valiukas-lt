@@ -3,6 +3,7 @@ Task 2 — Pinecone ingestion pipeline for projects.
 
 Upserts:
 - content/pages/projects/*.md → namespace projects_public
+- content/pages/partners/*.md → namespace projects_public (source_type=partner)
 - content/rag/projects/*.md → namespace projects_rag
 - content/rag/general/*.md → namespace projects_rag (source_type=rag, slug as-is e.g. general/tomas-approach)
 
@@ -153,6 +154,35 @@ def load_rag_general(base: Path) -> list[tuple[Path, dict, str]]:
     return result
 
 
+def load_partner_pages(base: Path) -> list[tuple[Path, dict, str]]:
+    """Load partner pages. Returns [(path, metadata, body), ...]. Slug e.g. partners/erobot-ai."""
+    partners_dir = base / "content/pages/partners"
+    if not partners_dir.exists():
+        return []
+    result: list[tuple[Path, dict, str]] = []
+    for f in sorted(partners_dir.glob("*.md")):
+        content = f.read_text(encoding="utf-8")
+        data, body = parse_frontmatter(content)
+        slug = (data.get("slug") or f"partners/{f.stem}").strip()
+        if not slug.startswith("partners/"):
+            slug = f"partners/{slug}"
+        meta = {
+            "slug": slug,
+            "title": data.get("title") or "",
+            "summary": data.get("summary") or "",
+            "type": data.get("content_type") or "partner",
+            "industry": data.get("industry") or "",
+            "ownership": "self",
+            "partner": "",
+            "doc_id": data.get("doc_id") or "",
+            "visibility": data.get("visibility") or "public",
+            "tags": data.get("tags") or [],
+            "language": data.get("language") or "en",
+        }
+        result.append((f, meta, body))
+    return result
+
+
 def build_doc_text(title: str, summary: str, body: str) -> str:
     """Build full document text for chunking (no YAML)."""
     parts = []
@@ -177,6 +207,7 @@ def collect_vectors(
     public_by_slug = load_public_projects(base)
     public_files = list((base / "content/pages/projects").glob("*.md")) if (base / "content/pages/projects").exists() else []
     rag_items = load_rag_projects(base, public_by_slug) + load_rag_general(base)
+    partner_items = load_partner_pages(base)
 
     vectors: list[dict] = []
     public_slugs: set[str] = set()
@@ -228,6 +259,46 @@ def collect_vectors(
                     "ownership": meta.get("ownership") or "self",
                     "partner": meta.get("partner") or "",
                     "type": meta.get("type") or "",
+                    "industry": meta.get("industry") or "",
+                    "tags": meta.get("tags") or [],
+                    "language": meta.get("language") or "en",
+                    "filepath": str(f.relative_to(base)),
+                    "chunk_index": i,
+                    "chunk_char_start": start,
+                    "chunk_char_end": end,
+                },
+                "text": chunk,
+            }
+            vectors.append(vec)
+
+    # Partner pages (same namespace as public so "who are my partners" retrieves them)
+    for f, meta, body in partner_items:
+        slug = meta["slug"]
+        if not include_slug(slug, "public"):
+            continue
+        public_slugs.add(slug)
+        doc_text = build_doc_text(meta["title"], meta["summary"], body)
+        chunks = chunk_text(doc_text)
+        slug_safe = slug_to_id_safe(slug)
+        namespace = NAMESPACE_PUBLIC
+        source_type = "partner"
+        doc_id = meta.get("doc_id") or f"partner_{f.stem}"
+        for i, chunk in enumerate(chunks):
+            vid = f"{namespace}:{slug_safe}:{source_type}:{i:04d}"
+            start = doc_text.find(chunk)
+            end = start + len(chunk) if start >= 0 else 0
+            vec = {
+                "id": vid,
+                "metadata": {
+                    "slug": slug,
+                    "title": meta.get("title") or "",
+                    "source_type": source_type,
+                    "visibility": "public",
+                    "doc_id": doc_id,
+                    "source_doc_id": doc_id,
+                    "ownership": "self",
+                    "partner": meta.get("partner") or "",
+                    "type": meta.get("type") or "partner",
                     "industry": meta.get("industry") or "",
                     "tags": meta.get("tags") or [],
                     "language": meta.get("language") or "en",
@@ -358,7 +429,8 @@ def run(
     # Group by namespace for delete + upsert
     by_ns: dict[str, list[dict]] = {}
     for v in vectors:
-        ns = NAMESPACE_PUBLIC if v["metadata"]["source_type"] == "public" else NAMESPACE_RAG
+        st = v["metadata"]["source_type"]
+        ns = NAMESPACE_PUBLIC if st in ("public", "partner") else NAMESPACE_RAG
         if ns not in by_ns:
             by_ns[ns] = []
         by_ns[ns].append(v)

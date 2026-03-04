@@ -23,15 +23,15 @@ const initialMessage: ChatMessage = {
   id: "init",
   role: "assistant",
   content:
-    "I represent Tomas's work and thinking.\nAsk about projects, architecture decisions, or automation strategy.",
+    "I represent Tomas's work and thinking.\nAsk about projects — or describe your situation, and I'll respond using his approach to automation and AI.",
 };
 
 const suggestedQuestions = [
-  "How would you design an AI-assisted automation system?",
-  "How do you decide between RPA and custom software?",
-  "How do you evaluate whether AI is actually needed?",
-  "How do you approach automation?",
   "What is your background?",
+  "Tell me about a real automation project you implemented.",
+  "How do you decide between RPA, AI, and custom software?",
+  "How do you evaluate whether AI is actually needed?",
+  "How would you design an AI-assisted automation system?",
 ];
 
 const STORAGE_KEY_MESSAGES = "ai_me_messages";
@@ -240,8 +240,13 @@ export default function AiMePage() {
       try {
         const parsed = JSON.parse(storedMessages) as ChatMessage[];
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setMessages(parsed);
-          const hasUserMessage = parsed.some((m) => m.role === "user");
+          // Always use current initial message copy for the first assistant message
+          const normalized =
+            parsed[0].role === "assistant"
+              ? [initialMessage, ...parsed.slice(1)]
+              : parsed;
+          setMessages(normalized);
+          const hasUserMessage = normalized.some((m) => m.role === "user");
           if (hasUserMessage) setHasStarted(true);
         }
       } catch {
