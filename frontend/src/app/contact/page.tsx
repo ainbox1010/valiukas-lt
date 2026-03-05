@@ -18,7 +18,7 @@ export default function ContactPage() {
         </ul>
         <div className="contact-email-cta">
           <a
-            href="mailto:ai.inquiry7@gmail.com?subject=Contact"
+            href="mailto:contact@valiukas.lt?subject=Contact"
             className="contact-email-button"
           >
             Just email me.

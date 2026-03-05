@@ -8,7 +8,7 @@ language: "en"
 visibility: "public"
 updated_at: "2026-02-27"
 doc_id: "home_v5"
-contact_email: "ai.inquiry7@gmail.com"
+contact_email: "contact@valiukas.lt"
 levels_intro: "Work begins at the right level — depending on your situation."
 levels:
   - id: "level-1"

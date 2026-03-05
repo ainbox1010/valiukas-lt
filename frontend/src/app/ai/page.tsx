@@ -465,7 +465,7 @@ export default function AiMePage() {
                 <div className="chat-actions">
                   <a
                     className="chat-action secondary"
-                    href="mailto:ai.inquiry7@gmail.com?subject=AI%20Me%20—%20question"
+                    href="mailto:contact@valiukas.lt?subject=AI%20Me%20—%20question"
                   >
                     Email me
                   </a>
