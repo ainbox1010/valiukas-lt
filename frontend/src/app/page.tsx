@@ -31,7 +31,7 @@ export default async function HomePage() {
     <div>
       <section className="hero">
         <h1>{title}</h1>
-        {summary ? <p>{summary}</p> : null}
+        {summary ? <p className="hero-summary">{summary}</p> : null}
         <p className="hero-levels-intro">{levelsIntro}</p>
         <div className="hero-levels">
           {levels.map((level) => (

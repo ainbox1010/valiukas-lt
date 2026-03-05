@@ -123,6 +123,10 @@ a:hover {
   margin-top: 0;
   max-width: 640px;
   color: var(--muted);
+}
+
+.hero .hero-summary {
+  max-width: 800px;
   transition: color 0.2s ease, opacity 0.2s ease;
 }
 
@@ -141,7 +145,7 @@ a:hover {
 }
 
 .hero-levels {
-  margin-top: 20px;
+  margin-top: 84px;
   display: grid;
   gap: 12px;
 }
@@ -1453,19 +1457,6 @@ a:hover {
 
 .services-page > .section.section {
   padding-top: 0;
-}
-
-.services-page-stack {
-  display: grid;
-  gap: 32px;
-}
-
-.services-page-stack h1 {
-  margin: 0;
-}
-
-.services-page-stack > p {
-  margin: 0;
 }
 
 .projects-meta {

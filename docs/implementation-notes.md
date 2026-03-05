@@ -46,6 +46,12 @@ Reference for future work: what was implemented and why. Update this when making
 
 Frontend app routes: `frontend/src/app/` (e.g. `ai/page.tsx`, `projects/[slug]/page.tsx`). Layout and nav: `frontend/src/app/layout.tsx`.
 
+### Page transitions
+- **Dependency:** `next-view-transitions` (View Transitions API for Next.js App Router).
+- **Implementation:** Layout wrapped with `ViewTransitions`; nav and footer links use `Link` from `next-view-transitions` to trigger transitions.
+- **CSS:** `globals.css` — `::view-transition-old(root)` and `::view-transition-new(root)` with fade-out/fade-in keyframes (1s duration). Requires `@supports (view-transition-name: none)` so unsupported browsers skip the animation.
+- **Browser support:** Chrome 111+, Edge 111+, Safari 18+, Firefox 130+.
+
 ---
 
 ## AI Me — RAG & retrieval
@@ -127,4 +133,4 @@ Frontend app routes: `frontend/src/app/` (e.g. `ai/page.tsx`, `projects/[slug]/p
 
 ---
 
-*Last updated: 2025-02 — session covering general RAG source, intent routing, prompts, scope, Clear chat UX, scope notice, empty state, spacing, favicon, caching.*
+*Last updated: 2025-02 — session covering general RAG source, intent routing, prompts, scope, Clear chat UX, scope notice, empty state, spacing, favicon, caching, page transitions.*

@@ -17,7 +17,8 @@ export default async function ServicesPage() {
     : [];
 
   return (
-    <section className="section services-page-stack services-page">
+    <div className="section services-page">
+      <section className="hero">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}
         {intro.length > 0 ? (
@@ -34,13 +35,16 @@ export default async function ServicesPage() {
             </p>
           </div>
         ) : null}
-            <div className="services-stack-accordion">
-        <ServicesAccordion
-          sections={sections}
-          dividerAfterIndex={2}
-          dividerTitle="How I work"
-        />
-            </div>
-    </section>
+      </section>
+      <section className="section">
+        <div className="services-stack-accordion">
+          <ServicesAccordion
+            sections={sections}
+            dividerAfterIndex={2}
+            dividerTitle="How I work"
+          />
+        </div>
+      </section>
+    </div>
   );
 }
