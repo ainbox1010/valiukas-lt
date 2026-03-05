@@ -1,5 +1,5 @@
 import "./globals.css";
-import Link from "next/link";
+import { Link, ViewTransitions } from "next-view-transitions";
 import FloatingAskAiMe from "./FloatingAskAiMe";
 
 export const metadata = {
@@ -26,8 +26,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <ViewTransitions>
+      <html lang="en">
+        <body>
         <header className="site-header">
           <div className="container nav">
             <Link href="/">
@@ -54,7 +55,8 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-      </body>
-    </html>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
