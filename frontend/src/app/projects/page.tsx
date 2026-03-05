@@ -8,6 +8,13 @@ export const dynamic = "force-dynamic";
 
 const TYPE_ORDER = ["ai", "automation", "systems"] as const;
 
+function formatType(type: ProjectIndexItem["type"]): string | null {
+  if (type === "ai") return "AI system";
+  if (type === "automation") return "Workflow automation";
+  if (type === "systems") return "Systems";
+  return null;
+}
+
 type ProjectIndexItem = {
   title: string;
   slug: string;
@@ -73,6 +80,12 @@ function normalizeProject(
 
 function sortProjects(projects: ProjectIndexItem[]): ProjectIndexItem[] {
   return [...projects].sort((a, b) => {
+    const pinSlug = "projects/ai-me";
+    const aIsPinned = a.slug === pinSlug;
+    const bIsPinned = b.slug === pinSlug;
+    if (aIsPinned && !bIsPinned) return -1;
+    if (bIsPinned && !aIsPinned) return 1;
+
     const ownershipOrder = (o: "self" | "partner") => (o === "self" ? 0 : 1);
     if (ownershipOrder(a.ownership) !== ownershipOrder(b.ownership)) {
       return ownershipOrder(a.ownership) - ownershipOrder(b.ownership);
@@ -152,6 +165,17 @@ export default async function ProjectsPage(props: {
       <section className="hero">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}
+        <div className="projects-ai-strip">
+          <p className="projects-ai-strip-text">
+            Prefer asking instead of browsing? AI Me can navigate the projects for you.
+          </p>
+          <Link
+            href={`/ai?q=${encodeURIComponent(AI_ME_PROJECTS_PROMPT)}`}
+            className="projects-ai-strip-button"
+          >
+            Ask AI Me about projects
+          </Link>
+        </div>
       </section>
 
       <section className="section">
@@ -166,18 +190,6 @@ export default async function ProjectsPage(props: {
             currentPartner={partnerFilter}
             currentOwnership={ownershipFilter}
           />
-          <div className="projects-ai-strip">
-            <p className="projects-ai-strip-text">
-              You can browse and filter projects below.
-              Prefer natural language? AI Me can navigate them for you.
-            </p>
-            <Link
-              href={`/ai?q=${encodeURIComponent(AI_ME_PROJECTS_PROMPT)}`}
-              className="projects-ai-strip-button"
-            >
-              Ask AI Me about projects
-            </Link>
-          </div>
           <div className="projects-list">
             {sorted.map((project) => {
               if (project.case_visibility === "link_only") {
@@ -193,6 +205,14 @@ export default async function ProjectsPage(props: {
                     <strong>{project.title}</strong>
                     <div className="list">
                       <div>{project.summary}</div>
+                      <div className="projects-meta">
+                        {formatType(project.type) && (
+                          <span className="projects-meta-pill">Type: {formatType(project.type)}</span>
+                        )}
+                        {project.industry && (
+                          <span className="projects-meta-pill">Industry: {project.industry}</span>
+                        )}
+                      </div>
                       <div>{firstLink?.label ?? "View on partner site"}</div>
                     </div>
                   </a>
@@ -204,7 +224,14 @@ export default async function ProjectsPage(props: {
                     <strong>{project.title}</strong>
                     <div className="list">
                       <div>{project.summary}</div>
-                      <div>Click to expand project details.</div>
+                      <div className="projects-meta">
+                        {formatType(project.type) && (
+                          <span className="projects-meta-pill">Type: {formatType(project.type)}</span>
+                        )}
+                        {project.industry && (
+                          <span className="projects-meta-pill">Industry: {project.industry}</span>
+                        )}
+                      </div>
                     </div>
                   </summary>
                   <div className="projects-details-content markdown">

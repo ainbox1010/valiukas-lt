@@ -1,5 +1,5 @@
 ---
-title: "InBlock AI — Agentic Crypto Risk Evaluation MVP"
+title: "InBlock AI — Crypto Risk Evaluation System"
 slug: "projects/inblock-ai"
 content_type: "project"
 ownership: "self"

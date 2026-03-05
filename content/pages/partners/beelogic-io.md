@@ -2,7 +2,7 @@
 title: "beelogic.io"
 slug: "partners/beelogic-io"
 content_type: "partner"
-summary: "Custom software development team delivering web platforms and operational systems."
+summary: "Engineering partner delivering custom platforms, AI systems, and operational software."
 visibility: "public"
 language: "en"
 doc_id: "partner_beelogic_io_v1"
@@ -11,7 +11,7 @@ order: 2
 
 ## beelogic.io
 
-Custom software development team delivering web platforms and operational systems.
+Engineering partner delivering custom platforms, AI systems, and operational software.
 
 **Best for:**
 - Industrial and logistics systems

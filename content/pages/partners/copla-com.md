@@ -2,7 +2,7 @@
 title: "copla.com"
 slug: "partners/copla-com"
 content_type: "partner"
-summary: "Compliance and regulatory advisory partner."
+summary: "Regulatory and compliance advisory partner supporting governance and regulatory alignment."
 visibility: "public"
 language: "en"
 doc_id: "partner_copla_com_v1"
@@ -11,7 +11,7 @@ order: 3
 
 ## copla.com
 
-Compliance and regulatory advisory partner.
+Regulatory and compliance advisory partner supporting governance and regulatory alignment.
 
 **Best for:**
 - DORA readiness

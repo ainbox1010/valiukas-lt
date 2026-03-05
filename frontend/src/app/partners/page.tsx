@@ -15,12 +15,14 @@ const PARTNERS: {
   collaborationModel: string;
   linkLabel: string;
   linkUrl: string | null;
+  category: "delivery_engineering" | "strategic_advisor";
 }[] = [
   {
     id: "erobot-ai",
+    category: "delivery_engineering",
     name: "erobot.ai",
     tagline:
-      "Automation and robotic process automation (RPA) specialists focused on operational digitalization.",
+      "Operational automation specialists focused on RPA and large-scale process digitalization.",
     bestFor: [
       "Process robotization",
       "Public sector automation",
@@ -34,9 +36,10 @@ const PARTNERS: {
   },
   {
     id: "beelogic-io",
+    category: "delivery_engineering",
     name: "beelogic.io",
     tagline:
-      "Custom software development team delivering web platforms and operational systems.",
+      "Engineering partner delivering custom platforms, AI systems, and operational software.",
     bestFor: [
       "Industrial and logistics systems",
       "Workflow-driven web platforms",
@@ -50,8 +53,10 @@ const PARTNERS: {
   },
   {
     id: "copla-com",
+    category: "delivery_engineering",
     name: "copla.com",
-    tagline: "Compliance and regulatory advisory partner.",
+    tagline:
+      "Regulatory and compliance advisory partner supporting governance and regulatory alignment.",
     bestFor: [
       "DORA readiness",
       "NIS2 advisory",
@@ -65,6 +70,7 @@ const PARTNERS: {
   },
   {
     id: "darius-gudaciauskas",
+    category: "strategic_advisor",
     name: "Darius Gudačiauskas",
     tagline:
       "Enterprise transformation and governance advisor with extensive executive experience across banking, telecommunications, retail, media, and insurance sectors. Experienced in leading large organizations (up to EUR200M revenue and 2000 employees) through restructuring, integration, and operational redesign.",
@@ -96,7 +102,8 @@ export default function PartnersPage() {
         <h2>Collaboration Model</h2>
         <div className="markdown partners-collaboration-intro">
           <p>
-            While I architect and design AI-enabled systems, certain projects
+            I architect and design AI-enabled systems and typically lead system
+            architecture, workflow automation design, and AI integration. Some projects
             require specialized delivery teams, industry experience, or
             additional implementation capacity. For such cases, I collaborate
             with trusted partners. Projects listed on this site clearly indicate
@@ -106,7 +113,23 @@ export default function PartnersPage() {
           </p>
         </div>
 
-        <PartnersAccordion partners={PARTNERS} />
+        <h3 className="partners-section-title">
+          Delivery &amp; Engineering Partners
+        </h3>
+        <p className="partners-section-desc">
+          Companies involved in implementation.
+        </p>
+        <PartnersAccordion
+          partners={PARTNERS.filter((p) => p.category === "delivery_engineering")}
+        />
+
+        <h3 className="partners-section-title">Strategic Advisors</h3>
+        <p className="partners-section-desc">
+          People I collaborate with on transformation, governance, and strategy.
+        </p>
+        <PartnersAccordion
+          partners={PARTNERS.filter((p) => p.category === "strategic_advisor")}
+        />
       </section>
     </div>
   );

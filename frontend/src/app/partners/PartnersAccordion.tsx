@@ -33,14 +33,14 @@ export default function PartnersAccordion({ partners }: PartnersAccordionProps) 
   return (
     <div className="partners-list">
       {partners.map((partner, index) => (
-        <details
-          key={partner.id}
-          ref={(el) => {
-            detailsRefs.current[index] = el;
-          }}
-          className="projects-details card partners-details"
-          onToggle={() => handleToggle(index)}
-        >
+        <div key={partner.id} className="partners-card-wrap card">
+          <details
+            ref={(el) => {
+              detailsRefs.current[index] = el;
+            }}
+            className="projects-details partners-details"
+            onToggle={() => handleToggle(index)}
+          >
           <summary className="projects-summary">
             <strong>{partner.name}</strong>
             <div className="list partners-tagline">
@@ -80,6 +80,7 @@ export default function PartnersAccordion({ partners }: PartnersAccordionProps) 
             ) : null}
           </div>
         </details>
+        </div>
       ))}
     </div>
   );
