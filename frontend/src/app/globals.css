@@ -51,7 +51,7 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   padding: 18px 0;
-  gap: 24px;
+  gap: 32px;
   flex-wrap: wrap;
 }
 
@@ -90,9 +90,10 @@ a:hover {
 }
 
 .hero p {
-  margin-top: 16px;
+  margin-top: 0;
   max-width: 640px;
   color: var(--muted);
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .hero-actions {
@@ -106,6 +107,7 @@ a:hover {
   margin-top: 16px;
   max-width: 640px;
   color: var(--muted);
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .hero-levels {
@@ -114,11 +116,38 @@ a:hover {
   gap: 12px;
 }
 
+/* Smooth accordion: grid trick so height animates */
+.hero-level-content-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+.hero-level-card[open] .hero-level-content-wrapper {
+  grid-template-rows: 1fr;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-level-content-wrapper {
+    transition: none;
+  }
+}
+
 .hero-level-card {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .hero-level-card:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(56, 189, 248, 0.12);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .hero-level-card {
+    transition: none;
+  }
 }
 
 .hero-level-summary {
@@ -126,6 +155,7 @@ a:hover {
   cursor: pointer;
   padding: 14px 40px 14px 16px;
   position: relative;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .hero-level-descriptor {
@@ -160,6 +190,8 @@ a:hover {
   padding: 14px 16px 16px;
   display: grid;
   gap: 10px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .hero-level-content ul {
@@ -170,11 +202,11 @@ a:hover {
 }
 
 .hero-level-ai-option {
-  margin-top: 14px;
+  margin-top: 8px;
   padding-top: 14px;
   border-top: 1px dashed var(--border);
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .hero-level-ai-option p {
@@ -227,6 +259,19 @@ a:hover {
   border-radius: 12px;
   padding: 18px;
   margin-top: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .homepage-conversion-grid .card:hover,
+  .card-cta:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(56, 189, 248, 0.12);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
 }
 
 .card-link {
@@ -376,8 +421,90 @@ a:hover {
 .services-intro {
   margin-top: 10px;
   display: grid;
-  gap: 8px;
+  gap: 32px;
   color: var(--muted);
+}
+
+.services-intro p {
+  margin: 0;
+}
+
+.services-levels-visual {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.services-levels-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1 1 0;
+  min-width: 100px;
+  max-width: 180px;
+  padding: 14px 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+@media (hover: hover) {
+  .services-page .services-levels-item:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+.services-page .services-levels-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .services-page .services-levels-item {
+    transition: none;
+  }
+}
+
+.services-levels-label {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.services-levels-tier {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.services-levels-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.services-intro-cta {
+  color: var(--text);
+  font-size: 14px;
+}
+.services-intro-cta .cta-button {
+  margin-left: 6px;
+  vertical-align: middle;
+  padding: 6px 12px;
+  font-size: 13px;
 }
 
 .services-highlights-grid {
@@ -443,6 +570,19 @@ a:hover {
   border-radius: 12px;
   background: var(--card);
   overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+  .services-page .services-details:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .services-page .services-details {
+    transition: none;
+  }
 }
 
 .services-summary {
@@ -724,6 +864,39 @@ a:hover {
   margin-right: 8px;
 }
 
+.floating-ask-ai-me {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.floating-ask-ai-me:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: transparent;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+.floating-ask-ai-me-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.floating-ask-ai-me-label {
+  white-space: nowrap;
+}
+
 .footer {
   border-top: 1px solid var(--border);
   padding: 32px 0;
@@ -851,6 +1024,24 @@ a:hover {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Same hover as hero/homepage cards (AI Me boxes only; pills keep their own hover). Not on .chat-message to avoid inner border inside transcript. */
+@media (hover: hover) {
+  .ai-me-page .chat-scope-notice:hover,
+  .ai-me-page .chat-transcript:hover,
+  .chat-clear-modal:hover {
+    border-color: rgba(56, 189, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .ai-me-page .chat-scope-notice,
+  .ai-me-page .chat-transcript,
+  .chat-clear-modal {
+    transition: none;
+  }
 }
 
 .chat-scope-notice .chat-scope-only {
@@ -894,6 +1085,7 @@ a:hover {
   overflow-y: auto;
   display: grid;
   gap: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .chat-message {
@@ -1016,6 +1208,7 @@ a:hover {
   padding: 24px;
   max-width: 360px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .chat-clear-title {
@@ -1145,4 +1338,27 @@ a:hover {
 .chat-action-separator {
   color: var(--muted);
   font-size: 12px;
+}
+
+
+
+.services-page .hero {
+  margin-bottom: 16px;
+}
+
+.services-page > .section.section {
+  padding-top: 0;
+}
+
+.services-page-stack {
+  display: grid;
+  gap: 32px;
+}
+
+.services-page-stack h1 {
+  margin: 0;
+}
+
+.services-page-stack > p {
+  margin: 0;
 }

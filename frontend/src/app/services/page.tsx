@@ -1,5 +1,7 @@
 import { loadMarkdown } from "@/lib/content/loadMarkdown";
+import Link from "next/link";
 import ServicesAccordion, { type ServiceSection } from "./ServicesAccordion";
+import ServicesLevelsVisual from "./ServicesLevelsVisual";
 
 export default async function ServicesPage() {
   const { frontmatter } = await loadMarkdown("pages/services.md");
@@ -15,8 +17,7 @@ export default async function ServicesPage() {
     : [];
 
   return (
-    <div className="section services-page">
-      <section className="hero">
+    <section className="section services-page-stack services-page">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}
         {intro.length > 0 ? (
@@ -24,17 +25,22 @@ export default async function ServicesPage() {
             {intro.map((line) => (
               <p key={line}>{line}</p>
             ))}
+            <ServicesLevelsVisual />
+            <p className="services-intro-cta">
+              Not sure where you fit?{" "}
+              <Link href="/ai" className="cta-button cta-button-secondary">
+                Ask AI Me
+              </Link>
+            </p>
           </div>
         ) : null}
-      </section>
-
-      <section className="section">
+            <div className="services-stack-accordion">
         <ServicesAccordion
           sections={sections}
           dividerAfterIndex={2}
           dividerTitle="How I work"
         />
-      </section>
-    </div>
+            </div>
+    </section>
   );
 }

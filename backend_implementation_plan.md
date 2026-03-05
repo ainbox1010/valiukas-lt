@@ -81,4 +81,12 @@ Fields we will rely on for ingestion, retrieval, and citations.
 
 ---
 
+## 6. Environment & config
+
+- **Settings** (`app/core/config.py`): Required env vars are loaded from **`backend/.env`**. The module parses this file and sets `os.environ` before building Pydantic `Settings`, so it works in the uvicorn `--reload` subprocess as well.
+- **Required vars** (must be set in `backend/.env` or in the shell): `OPENAI_API_KEY`, `PINECONE_API_KEY`, `PINECONE_INDEX`, `PINECONE_NAMESPACE`, `ALLOWED_ORIGINS`.
+- **Run backend from `backend/`**: Start the server from the backend directory (e.g. `cd backend && source .venv/bin/activate && uvicorn app.main:app --reload`) so the loader can find `backend/.env` (or ensure cwd is `backend` when the process starts).
+
+---
+
 *Update this file as we progress. Do not delete — it is the implementation checklist.*

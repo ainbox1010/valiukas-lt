@@ -42,7 +42,8 @@ export default async function HomePage() {
                   <span className="hero-level-descriptor">{level.descriptor}</span>
                 ) : null}
               </summary>
-              <div className="hero-level-content">
+              <div className="hero-level-content-wrapper">
+                <div className="hero-level-content">
                 {level.summary ? <p>{level.summary}</p> : null}
                 {Array.isArray(level.expand_bullets) &&
                 level.expand_bullets.length > 0 ? (
@@ -75,6 +76,7 @@ export default async function HomePage() {
                     </div>
                   </div>
                 ) : null}
+              </div>
               </div>
             </details>
           ))}
@@ -113,7 +115,7 @@ export default async function HomePage() {
       </section>
 
       <section className="section">
-        <div className="card">
+        <div className="card card-cta">
           <h2>Not sure where to start?</h2>
           <p>
             Explore your situation with AI Me — or discuss your case directly.

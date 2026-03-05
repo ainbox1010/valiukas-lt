@@ -10,7 +10,7 @@ tags: ["services", "ai", "automation", "workflows", "documents"]
 updated_at: "2026-02-27"
 doc_id: "services_v4"
 intro:
-  - "I work across three levels. Each level builds on the previous one and defines clear scope, ownership, and outcomes."
+  - "I work across three levels. They build on each other, but projects can start at the level that fits your situation."
 highlights:
   - "Level 1: Process clarity and system design."
   - "Level 2: Workflow automation."

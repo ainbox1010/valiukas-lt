@@ -1,5 +1,6 @@
 import "./globals.css";
 import Link from "next/link";
+import FloatingAskAiMe from "./FloatingAskAiMe";
 
 export const metadata = {
   title: "Tomas Valiukas — AI & IT Projects",
@@ -42,6 +43,7 @@ export default function RootLayout({
           </div>
         </header>
         <main className="container">{children}</main>
+        <FloatingAskAiMe />
         <footer className="footer">
           <div className="container footer-inner">
             <div>AI that works. <Link href="/ai">Ask instead of browsing.</Link></div>
