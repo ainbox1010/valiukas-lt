@@ -1,6 +1,7 @@
 import "./globals.css";
 import { Link, ViewTransitions } from "next-view-transitions";
 import FloatingAskAiMe from "./FloatingAskAiMe";
+import AccordionCloseFix from "./AccordionCloseFix";
 
 export const metadata = {
   title: "Tomas Valiukas — AI & IT Projects",
@@ -44,6 +45,7 @@ export default function RootLayout({
           </div>
         </header>
         <main className="container">{children}</main>
+        <AccordionCloseFix />
         <FloatingAskAiMe />
         <footer className="footer">
           <div className="container footer-inner">

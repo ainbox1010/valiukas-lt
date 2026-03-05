@@ -45,7 +45,8 @@ export default function ServicesAccordion({
               ) : null}
             </summary>
 
-            <div className="services-details-content">
+            <div className="accordion-expand-wrapper">
+              <div className="services-details-content">
               {!["how-delivery-works", "engagement-models"].includes(
                 section.id
               ) ? (
@@ -89,6 +90,7 @@ export default function ServicesAccordion({
                   </ul>
                 </>
               ) : null}
+              </div>
             </div>
           </details>
           </Fragment>

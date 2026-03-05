@@ -234,8 +234,10 @@ export default async function ProjectsPage(props: {
                       </div>
                     </div>
                   </summary>
-                  <div className="projects-details-content markdown">
-                    <div dangerouslySetInnerHTML={{ __html: project.html }} />
+                  <div className="accordion-expand-wrapper">
+                    <div className="projects-details-content markdown">
+                      <div dangerouslySetInnerHTML={{ __html: project.html }} />
+                    </div>
                   </div>
                 </details>
               );

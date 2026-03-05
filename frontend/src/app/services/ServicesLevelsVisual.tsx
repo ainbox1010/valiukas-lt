@@ -13,7 +13,8 @@ export default function ServicesLevelsVisual() {
     const details = document.getElementById(targetId);
     if (details && details instanceof HTMLDetailsElement) {
       details.open = true;
-      details.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      const summary = details.querySelector("summary");
+      summary?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
 

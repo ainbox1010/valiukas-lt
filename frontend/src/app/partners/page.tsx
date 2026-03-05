@@ -113,22 +113,19 @@ export default function PartnersPage() {
           </p>
         </div>
 
-        <h3 className="partners-section-title">
-          Delivery &amp; Engineering Partners
-        </h3>
-        <p className="partners-section-desc">
-          Companies involved in implementation.
-        </p>
         <PartnersAccordion
-          partners={PARTNERS.filter((p) => p.category === "delivery_engineering")}
-        />
-
-        <h3 className="partners-section-title">Strategic Advisors</h3>
-        <p className="partners-section-desc">
-          People I collaborate with on transformation, governance, and strategy.
-        </p>
-        <PartnersAccordion
-          partners={PARTNERS.filter((p) => p.category === "strategic_advisor")}
+          sections={[
+            {
+              title: "Delivery & Engineering Partners",
+              desc: "Companies involved in implementation.",
+              partners: PARTNERS.filter((p) => p.category === "delivery_engineering"),
+            },
+            {
+              title: "Strategic Advisors",
+              desc: "People I collaborate with on transformation, governance, and strategy.",
+              partners: PARTNERS.filter((p) => p.category === "strategic_advisor"),
+            },
+          ]}
         />
       </section>
     </div>

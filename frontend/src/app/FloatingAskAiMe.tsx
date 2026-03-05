@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function FloatingAskAiMe() {
@@ -8,7 +7,7 @@ export default function FloatingAskAiMe() {
   if (pathname === "/ai") return null;
 
   return (
-    <Link
+    <a
       href="/ai"
       className="floating-ask-ai-me"
       aria-label="Ask AI Me"
@@ -29,6 +28,6 @@ export default function FloatingAskAiMe() {
         </svg>
       </span>
       <span className="floating-ask-ai-me-label">Ask AI Me</span>
-    </Link>
+    </a>
   );
 }

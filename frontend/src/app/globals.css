@@ -150,18 +150,44 @@ a:hover {
   gap: 12px;
 }
 
-/* Smooth accordion: grid trick so height animates */
+/* Smooth accordion: grid trick + opacity fade (1s) */
 .hero-level-content-wrapper {
   display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.25s ease;
+  grid-template-rows: minmax(0, 0fr);
+  transition:
+    grid-template-rows 1s ease,
+    content-visibility 1s allow-discrete;
+  align-items: flex-start;
+  content-visibility: hidden;
 }
 .hero-level-card[open] .hero-level-content-wrapper {
-  grid-template-rows: 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  content-visibility: visible;
+}
+/* Safari close fix: override to closed state while animating (no content-visibility here - Safari hides text immediately) */
+.hero-level-card[open].accordion-closing .hero-level-content-wrapper {
+  grid-template-rows: minmax(0, 0fr);
+}
+.hero-level-card[open].accordion-closing .hero-level-content {
+  opacity: 0;
+}
+/* Safari: sync text with frame - text appears after frame expands, hides before frame contracts */
+@supports not (interpolate-size: allow-keywords) {
+  .hero-level-card[open] .hero-level-content {
+    transition: opacity 0.5s ease 0.4s;
+  }
+  .hero-level-card[open].accordion-closing .hero-level-content {
+    transition: opacity 0.35s ease 0s;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-level-content-wrapper {
     transition: none;
+    content-visibility: visible;
+  }
+  .hero-level-content {
+    transition: none;
+    opacity: 1;
   }
 }
 
@@ -218,6 +244,9 @@ a:hover {
 .hero-level-card[open] .hero-level-summary::after {
   transform: translateY(-50%) rotate(180deg);
 }
+.hero-level-card.accordion-closing .hero-level-summary::after {
+  transform: translateY(-50%) rotate(0deg);
+}
 
 .hero-level-content {
   border-top: 1px solid var(--border);
@@ -226,6 +255,11 @@ a:hover {
   gap: 10px;
   min-height: 0;
   overflow: hidden;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.hero-level-card[open] .hero-level-content {
+  opacity: 1;
 }
 
 .hero-level-content ul {
@@ -645,6 +679,105 @@ a:hover {
 .services-details[open] .services-summary::after {
   transform: translateY(-50%) rotate(180deg);
 }
+.services-details.accordion-closing .services-summary::after,
+.projects-details.accordion-closing .projects-summary::after,
+.partners-details.accordion-closing .projects-summary::after {
+  transform: translateY(-50%) rotate(0deg);
+}
+
+/* Accordion expand + opacity (1s) for Services, Projects, Partners */
+.accordion-expand-wrapper {
+  display: grid;
+  grid-template-rows: minmax(0, 0fr);
+  transition:
+    grid-template-rows 1s ease,
+    content-visibility 1s allow-discrete;
+  align-items: flex-start;
+  content-visibility: hidden;
+}
+.services-details[open] .accordion-expand-wrapper,
+.projects-details[open] .accordion-expand-wrapper,
+.partners-details[open] .accordion-expand-wrapper {
+  grid-template-rows: minmax(0, 1fr);
+  content-visibility: visible;
+}
+/* Safari close fix: override to closed state while animating (no content-visibility here - Safari hides text immediately) */
+.services-details[open].accordion-closing .accordion-expand-wrapper,
+.projects-details[open].accordion-closing .accordion-expand-wrapper,
+.partners-details[open].accordion-closing .accordion-expand-wrapper {
+  grid-template-rows: minmax(0, 0fr);
+}
+.services-details[open].accordion-closing .accordion-expand-wrapper > *,
+.projects-details[open].accordion-closing .accordion-expand-wrapper > *,
+.partners-details[open].accordion-closing .accordion-expand-wrapper > * {
+  opacity: 0;
+}
+/* Safari: sync text with frame - text appears after frame expands, hides before frame contracts */
+@supports not (interpolate-size: allow-keywords) {
+  .services-details[open] .accordion-expand-wrapper > *,
+  .projects-details[open] .accordion-expand-wrapper > *,
+  .partners-details[open] .accordion-expand-wrapper > * {
+    transition: opacity 0.5s ease 0.4s;
+  }
+  .services-details[open].accordion-closing .accordion-expand-wrapper > *,
+  .projects-details[open].accordion-closing .accordion-expand-wrapper > *,
+  .partners-details[open].accordion-closing .accordion-expand-wrapper > * {
+    transition: opacity 0.35s ease 0s;
+  }
+}
+.accordion-expand-wrapper > * {
+  min-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.services-details[open] .accordion-expand-wrapper > *,
+.projects-details[open] .accordion-expand-wrapper > *,
+.partners-details[open] .accordion-expand-wrapper > * {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .accordion-expand-wrapper {
+    transition: none;
+    content-visibility: visible;
+  }
+  .accordion-expand-wrapper > * {
+    transition: none;
+    opacity: 1;
+  }
+}
+
+/* Chrome 131+: native details animation (fallback when grid transition doesn't run) */
+@supports (interpolate-size: allow-keywords) {
+  .hero-level-card,
+  .services-details,
+  .projects-details,
+  .partners-details {
+    interpolate-size: allow-keywords;
+  }
+  .hero-level-card::details-content,
+  .services-details::details-content,
+  .projects-details::details-content,
+  .partners-details::details-content {
+    display: block;
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    content-visibility: hidden;
+    transition:
+      block-size 1s ease,
+      opacity 1s ease,
+      content-visibility 1s allow-discrete;
+  }
+  .hero-level-card[open]::details-content,
+  .services-details[open]::details-content,
+  .projects-details[open]::details-content,
+  .partners-details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+    content-visibility: visible;
+  }
+}
 
 .services-summary-sub {
   margin-top: 6px;
@@ -766,12 +899,13 @@ a:hover {
   border-radius: 8px;
   white-space: nowrap;
   margin-left: auto;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .projects-ai-strip-button:hover {
   border-color: var(--accent);
-  color: var(--text);
-  background: rgba(var(--accent-rgb), 0.05);
+  color: var(--accent);
+  background: transparent;
 }
 
 .projects-list {
@@ -938,20 +1072,19 @@ a:hover {
   align-items: center;
   gap: 8px;
   padding: 10px 16px;
+  border-radius: 12px;
   background: transparent;
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 12px;
   font-weight: 600;
   font-size: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-  transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
 }
-.floating-ask-ai-me:hover {
-  color: var(--accent);
+.floating-ask-ai-me:hover,
+.floating-ask-ai-me:focus-visible {
   border-color: var(--accent);
-  background: transparent;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  background: rgba(var(--accent-rgb), 0.06);
 }
 .floating-ask-ai-me-icon {
   display: flex;
