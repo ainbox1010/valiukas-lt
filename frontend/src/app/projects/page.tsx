@@ -161,7 +161,7 @@ export default async function ProjectsPage(props: {
   const sorted = sortProjects(projects);
 
   return (
-    <div className="section">
+    <div className="section projects-page">
       <section className="hero">
         <h1>{title}</h1>
         {summary ? <p>{summary}</p> : null}

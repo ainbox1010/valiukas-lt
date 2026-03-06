@@ -46,6 +46,7 @@
 
 html {
   scrollbar-gutter: stable;
+  overflow-x: hidden;
 }
 
 body {
@@ -1610,4 +1611,131 @@ a:hover {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: rgba(15, 23, 42, 0.85);
+}
+
+/* Mobile: global layout overrides */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero {
+    padding: 56px 0 36px;
+  }
+
+  .section {
+    padding: 28px 0;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.15;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-copyright {
+    text-align: left;
+  }
+
+  .floating-ask-ai-me {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .cta-two-buttons .cta-button {
+    min-width: 0;
+  }
+
+  .cta-button {
+    white-space: normal;
+  }
+
+  .projects-page .projects-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .projects-page .projects-filters .projects-filter-group {
+    width: 100%;
+  }
+
+  .projects-page .projects-filters .projects-filter-group:last-child {
+    margin-left: 0;
+  }
+
+  .projects-page .projects-filters select,
+  .projects-page .projects-filters .projects-filter-submit {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .projects-page .projects-filters .projects-filter-submit {
+    text-align: center;
+  }
+
+  .projects-page .projects-ai-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .projects-page .projects-ai-strip-text {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .projects-page .projects-ai-strip-button {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero {
+    padding: 48px 0 28px;
+  }
+
+  .section {
+    padding: 24px 0;
+  }
+
+  .hero h1 {
+    font-size: 30px;
+    line-height: 1.12;
+  }
+
+  .floating-ask-ai-me {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 13px;
+  }
 }
