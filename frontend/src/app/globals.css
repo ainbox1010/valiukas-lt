@@ -1746,6 +1746,52 @@ a:hover {
     font-size: 13px;
   }
 
+  .services-page .services-levels-visual {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .services-page .services-levels-item {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: none;
+  }
+
+  .services-page .services-levels-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+
+  .services-page .services-intro-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .services-page .services-intro-cta .cta-button {
+    margin-left: auto;
+  }
+
+  .services-page .services-summary {
+    padding: 14px 36px 14px 14px;
+  }
+
+  .services-page .services-summary strong {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .services-page .services-summary::after {
+    right: 12px;
+  }
+
   .ai-me-page .chat-transcript {
     min-height: 200px;
     max-height: 65vh;
