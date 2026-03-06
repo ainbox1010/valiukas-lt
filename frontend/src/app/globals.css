@@ -46,6 +46,7 @@
 
 html {
   scrollbar-gutter: stable;
+  overflow-x: hidden;
 }
 
 body {
@@ -1329,6 +1330,8 @@ a:hover {
   min-height: 320px;
   max-height: 520px;
   overflow-y: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: grid;
   gap: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -1610,4 +1613,236 @@ a:hover {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: rgba(15, 23, 42, 0.85);
+}
+
+/* Mobile: global layout overrides */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .hero {
+    padding: 56px 0 36px;
+  }
+
+  .section {
+    padding: 28px 0;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.15;
+  }
+
+  .footer-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-copyright {
+    text-align: left;
+  }
+
+  .floating-ask-ai-me {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .cta-two-buttons .cta-button {
+    min-width: 0;
+  }
+
+  .cta-button {
+    white-space: normal;
+  }
+
+  .projects-page .projects-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .projects-page .projects-filters .projects-filter-group {
+    width: 100%;
+  }
+
+  .projects-page .projects-filters .projects-filter-group:last-child {
+    margin-left: 0;
+  }
+
+  .projects-page .projects-filters select,
+  .projects-page .projects-filters .projects-filter-submit {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .projects-page .projects-filters .projects-filter-submit {
+    text-align: center;
+  }
+
+  .projects-page .projects-ai-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .projects-page .projects-ai-strip-text {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .projects-page .projects-ai-strip-button {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .ai-me-page .chat-transcript {
+    min-height: 220px;
+    max-height: 60vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero {
+    padding: 48px 0 28px;
+  }
+
+  .section {
+    padding: 24px 0;
+  }
+
+  .hero h1 {
+    font-size: 28px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  .cta-two-buttons {
+    flex-direction: column;
+  }
+
+  .cta-two-buttons a,
+  .cta-two-buttons .cta-button {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+
+  .floating-ask-ai-me {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .services-page .services-levels-visual {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .services-page .services-levels-item {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    flex: none;
+  }
+
+  .services-page .services-levels-arrow {
+    align-self: center;
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+
+  .services-page .services-intro-cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    max-width: none;
+  }
+
+  .services-page .services-intro-cta .cta-button {
+    margin-left: auto;
+  }
+
+  .services-page .services-summary {
+    padding: 14px 36px 14px 14px;
+  }
+
+  .services-page .services-summary strong {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .services-page .services-summary::after {
+    right: 12px;
+  }
+
+  .ai-me-page .chat-transcript {
+    min-height: 200px;
+    max-height: 65vh;
+  }
+
+  .ai-me-page .chat-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-me-page .chat-input-row button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 14px 18px;
+  }
+
+  .ai-me-page .chat-suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-me-page .chat-suggestions button {
+    text-align: center;
+  }
+
+  .ai-me-page .chat-status button {
+    margin-left: auto !important;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .contact-page .hero h1 {
+    margin-bottom: 18px;
+  }
+
+  .contact-page .contact-email-cta {
+    margin-top: 28px;
+  }
+
+  .contact-page .contact-email-button {
+    padding: 12px 18px;
+  }
 }
