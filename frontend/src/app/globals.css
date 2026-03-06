@@ -1330,6 +1330,8 @@ a:hover {
   min-height: 320px;
   max-height: 520px;
   overflow-y: auto;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: grid;
   gap: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -1708,6 +1710,11 @@ a:hover {
     margin-left: 0;
     text-align: center;
   }
+
+  .ai-me-page .chat-transcript {
+    min-height: 220px;
+    max-height: 60vh;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1737,5 +1744,35 @@ a:hover {
   .nav-links {
     gap: 12px;
     font-size: 13px;
+  }
+
+  .ai-me-page .chat-transcript {
+    min-height: 200px;
+    max-height: 65vh;
+  }
+
+  .ai-me-page .chat-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-me-page .chat-input-row button {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    padding: 14px 18px;
+  }
+
+  .ai-me-page .chat-suggestions {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-me-page .chat-suggestions button {
+    text-align: center;
+  }
+
+  .ai-me-page .chat-status button {
+    margin-left: auto !important;
+    font-size: 11px;
+    padding: 4px 8px;
   }
 }
