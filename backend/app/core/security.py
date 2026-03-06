@@ -11,7 +11,22 @@ def is_disallowed_topic(message: str) -> bool:
     return _BANNED_TOPICS.search(message) is not None
 
 
+# Short affirmative replies that may be follow-ups to "Would you like me to dive deeper?" etc.
+# Treat as in-scope so we don't refuse; let the LLM handle (may ask for clarification without history).
+_FOLLOWUP_AFFIRMATIVE = re.compile(
+    r"^(yes|yeah|yep|yup|yea|sure|please|ok|okay|go ahead|go on|absolutely|definitely|of course|continue|expand|more|tell me more|elaborate)(\s+please)?\.?$",
+    re.IGNORECASE,
+)
+
+
+def is_followup_affirmative(message: str) -> bool:
+    """True if message is a short affirmative that could be a follow-up reply."""
+    return _FOLLOWUP_AFFIRMATIVE.match(message.strip()) is not None
+
+
 def is_in_scope(message: str) -> bool:
+    if is_followup_affirmative(message):
+        return True
     lowered = message.lower()
     keywords = [
         "tomas",

@@ -1732,8 +1732,20 @@ a:hover {
   }
 
   .hero h1 {
-    font-size: 30px;
-    line-height: 1.12;
+    font-size: 28px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+
+  .cta-two-buttons {
+    flex-direction: column;
+  }
+
+  .cta-two-buttons a,
+  .cta-two-buttons .cta-button {
+    width: 100%;
+    display: block;
+    text-align: center;
   }
 
   .floating-ask-ai-me {
@@ -1820,5 +1832,17 @@ a:hover {
     margin-left: auto !important;
     font-size: 11px;
     padding: 4px 8px;
+  }
+
+  .contact-page .hero h1 {
+    margin-bottom: 18px;
+  }
+
+  .contact-page .contact-email-cta {
+    margin-top: 28px;
+  }
+
+  .contact-page .contact-email-button {
+    padding: 12px 18px;
   }
 }
