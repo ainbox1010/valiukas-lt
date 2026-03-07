@@ -5,7 +5,8 @@ Upserts:
 - content/pages/projects/*.md → namespace projects_public
 - content/pages/partners/*.md → namespace projects_public (source_type=partner)
 - content/rag/projects/*.md → namespace projects_rag
-- content/rag/general/*.md → namespace projects_rag (source_type=rag, slug as-is e.g. general/tomas-approach)
+- content/rag/general/*.md → namespace projects_rag (source_type=rag; empty for now)
+- content/rag/tomas/*.md → namespace tomas (source_type=tomas, slug e.g. tomas/approach-methodology)
 
 Future: content/internal/*.md will be added (not in current scope).
 
@@ -17,7 +18,7 @@ Metadata: slug, title, source_type, visibility, doc_id, source_doc_id, ownership
 Delete before upsert by filter {slug, source_type} (Pinecone 3.2.2+).
 Use --full-reindex to clear namespace before upsert (orphan cleanup).
 
-Run: python -m app.rag.index_projects [--dry-run] [--slug SLUG] [--namespace public|rag|both]
+Run: python -m app.rag.index_projects [--dry-run] [--slug SLUG] [--namespace public|rag|tomas|both|all]
 """
 
 from __future__ import annotations
@@ -37,6 +38,7 @@ from app.rag.chunking import chunk_text
 
 NAMESPACE_PUBLIC = "projects_public"
 NAMESPACE_RAG = "projects_rag"
+NAMESPACE_TOMAS = "tomas"
 
 
 def parse_frontmatter(content: str) -> tuple[dict, str]:
@@ -127,8 +129,8 @@ def load_rag_projects(base: Path, public_by_slug: dict[str, dict]) -> list[tuple
 
 
 def load_rag_general(base: Path) -> list[tuple[Path, dict, str]]:
-    """Load general RAG content (e.g. methodology). Returns [(path, metadata, body), ...].
-    Slugs stay as-is (e.g. general/tomas-approach), no projects/ prefix."""
+    """Load general RAG content. Returns [(path, metadata, body), ...].
+    Slugs stay as-is (e.g. general/...). Empty for now."""
     general_dir = base / "content/rag/general"
     if not general_dir.exists():
         return []
@@ -142,6 +144,36 @@ def load_rag_general(base: Path) -> list[tuple[Path, dict, str]]:
             "title": data.get("title") or "",
             "summary": data.get("summary") or "",
             "type": data.get("type") or "",
+            "industry": data.get("industry") or "",
+            "ownership": data.get("ownership") or "self",
+            "partner": data.get("partner") or "",
+            "doc_id": data.get("doc_id") or "",
+            "visibility": data.get("visibility") or "rag",
+            "tags": data.get("tags") or [],
+            "language": data.get("language") or "en",
+        }
+        result.append((f, meta, body))
+    return result
+
+
+def load_rag_tomas(base: Path) -> list[tuple[Path, dict, str]]:
+    """Load Tomas content (approach, methodology, etc.). Returns [(path, metadata, body), ...].
+    Upserts to namespace tomas. Slugs e.g. tomas/approach-methodology."""
+    tomas_dir = base / "content/rag/tomas"
+    if not tomas_dir.exists():
+        return []
+    result: list[tuple[Path, dict, str]] = []
+    for f in sorted(tomas_dir.glob("*.md")):
+        content = f.read_text(encoding="utf-8")
+        data, body = parse_frontmatter(content)
+        slug = (data.get("slug") or f"tomas/{f.stem}").strip()
+        if not slug.startswith("tomas/"):
+            slug = f"tomas/{slug}"
+        meta = {
+            "slug": slug,
+            "title": data.get("title") or "",
+            "summary": data.get("summary") or "",
+            "type": data.get("type") or "methodology",
             "industry": data.get("industry") or "",
             "ownership": data.get("ownership") or "self",
             "partner": data.get("partner") or "",
@@ -208,10 +240,12 @@ def collect_vectors(
     public_files = list((base / "content/pages/projects").glob("*.md")) if (base / "content/pages/projects").exists() else []
     rag_items = load_rag_projects(base, public_by_slug) + load_rag_general(base)
     partner_items = load_partner_pages(base)
+    tomas_items = load_rag_tomas(base)
 
     vectors: list[dict] = []
     public_slugs: set[str] = set()
     rag_slugs: set[str] = set()
+    tomas_slugs: set[str] = set()
 
     def include_slug(slug: str, ns: str) -> bool:
         if slug_filter and slug != slug_filter and not slug.endswith("/" + slug_filter):
@@ -220,6 +254,12 @@ def collect_vectors(
             return False
         if namespace_filter == "rag" and ns != "rag":
             return False
+        if namespace_filter == "tomas" and ns != "tomas":
+            return False
+        if namespace_filter is None and ns == "tomas":
+            return False  # "both" = public+rag only
+        if namespace_filter == "all":
+            return True
         return True
 
     # Public projects
@@ -351,6 +391,46 @@ def collect_vectors(
             }
             vectors.append(vec)
 
+    # Tomas content (approach, methodology) → namespace tomas
+    for f, meta, body in tomas_items:
+        slug = meta["slug"]
+        if not include_slug(slug, "tomas"):
+            continue
+        tomas_slugs.add(slug)
+        doc_text = build_doc_text(meta["title"], meta["summary"], body)
+        chunks = chunk_text(doc_text)
+        slug_safe = slug_to_id_safe(slug)
+        namespace = NAMESPACE_TOMAS
+        source_type = "tomas"
+        doc_id = meta.get("doc_id") or f"tomas_{f.stem}"
+        for i, chunk in enumerate(chunks):
+            vid = f"{namespace}:{slug_safe}:{source_type}:{i:04d}"
+            start = doc_text.find(chunk)
+            end = start + len(chunk) if start >= 0 else 0
+            vec = {
+                "id": vid,
+                "metadata": {
+                    "slug": slug,
+                    "title": meta.get("title") or "",
+                    "source_type": source_type,
+                    "visibility": meta.get("visibility") or "rag",
+                    "doc_id": doc_id,
+                    "source_doc_id": doc_id,
+                    "ownership": meta.get("ownership") or "self",
+                    "partner": meta.get("partner") or "",
+                    "type": meta.get("type") or "methodology",
+                    "industry": meta.get("industry") or "",
+                    "tags": meta.get("tags") or [],
+                    "language": meta.get("language") or "en",
+                    "filepath": str(f.relative_to(base)),
+                    "chunk_index": i,
+                    "chunk_char_start": start,
+                    "chunk_char_end": end,
+                },
+                "text": chunk,
+            }
+            vectors.append(vec)
+
     return vectors, public_slugs, rag_slugs
 
 
@@ -430,7 +510,12 @@ def run(
     by_ns: dict[str, list[dict]] = {}
     for v in vectors:
         st = v["metadata"]["source_type"]
-        ns = NAMESPACE_PUBLIC if st in ("public", "partner") else NAMESPACE_RAG
+        if st == "tomas":
+            ns = NAMESPACE_TOMAS
+        elif st in ("public", "partner"):
+            ns = NAMESPACE_PUBLIC
+        else:
+            ns = NAMESPACE_RAG
         if ns not in by_ns:
             by_ns[ns] = []
         by_ns[ns].append(v)
@@ -492,7 +577,7 @@ def main() -> None:
     parser.add_argument("--slug", type=str, help="Only process this slug (e.g. projects/ai-me)")
     parser.add_argument(
         "--namespace",
-        choices=["public", "rag", "both"],
+        choices=["public", "rag", "tomas", "both", "all"],
         default="both",
         help="Which namespace(s) to process",
     )
@@ -501,11 +586,18 @@ def main() -> None:
     args = parser.parse_args()
 
     base = args.base or _find_repo_base()
+    ns_filter = None
+    if args.namespace == "both":
+        ns_filter = None  # public + rag
+    elif args.namespace == "all":
+        ns_filter = "all"
+    else:
+        ns_filter = args.namespace
     run(
         base=base,
         dry_run=args.dry_run,
         slug_filter=args.slug,
-        namespace_filter=args.namespace if args.namespace != "both" else None,
+        namespace_filter=ns_filter,
         full_reindex=args.full_reindex,
     )
 

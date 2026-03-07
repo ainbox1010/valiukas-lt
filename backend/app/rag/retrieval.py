@@ -11,9 +11,9 @@ from app.rag.pinecone_store import get_pinecone_index
 logger = get_logger(__name__)
 
 
-PROJECT_NAMESPACES = ("projects_public", "projects_rag", "dev_ai_me")
+PROJECT_NAMESPACES = ("projects_public", "projects_rag", "tomas")
 PROJECT_ONLY_NAMESPACES = ("projects_public", "projects_rag")
-CV_NAMESPACE = "dev_ai_me"
+CV_NAMESPACE = "tomas"
 
 # Keywords that indicate user is asking about CV/background/career
 BACKGROUND_INTENT_KEYWORDS = [
@@ -54,7 +54,7 @@ class ContextChunk:
     source: str | None
     chunk_id: str | None
     score: float | None
-    namespace: str | None = None  # e.g. dev_ai_me, projects_public, projects_rag
+    namespace: str | None = None  # e.g. tomas, projects_public, projects_rag
     vector_id: str | None = None  # Pinecone vector id, for dedupe
 
 
@@ -174,7 +174,7 @@ def retrieve_context(message: str) -> list[ContextChunk]:
             return []
 
     if background_intent:
-        # CV first (dev_ai_me), then optional project context
+        # CV + methodology first (tomas), then optional project context
         cv_matches = _query_ns(CV_NAMESPACE, top_k=12)
         proj_public = _query_ns("projects_public", top_k=2)
         proj_rag = _query_ns("projects_rag", top_k=2)

@@ -7,9 +7,9 @@ from app.core.cache import cache_get_json, cache_set_json, get_cache, hash_text
 from app.core.config import get_settings
 from app.core.limits import check_limits, get_limit_status
 from app.core.logging import get_logger, safe_message_excerpt
-from app.core.security import is_disallowed_topic
+from app.core.security import is_disallowed_topic, is_followup_affirmative
 from app.llm.openai_client import create_response
-from app.llm.prompts import build_prompt
+from app.llm.prompts import build_prompt, get_prompt_version
 from app.rag.retrieval import ContextChunk, retrieve_context
 
 router = APIRouter()
@@ -102,6 +102,18 @@ def _sanitize_history(history: list[HistoryTurn] | None) -> list[dict]:
     return out[-6:]  # cap at 6
 
 
+def _retrieval_query(message: str, sanitized_history: list[dict]) -> str:
+    """Use last substantive user message for retrieval when current message is a follow-up affirmative."""
+    if not is_followup_affirmative(message):
+        return message
+    if not sanitized_history:
+        return message
+    for turn in reversed(sanitized_history):
+        if turn.get("role") == "user" and (turn.get("content") or "").strip():
+            return turn["content"].strip()
+    return message
+
+
 def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
     sources: list[dict] = []
     for chunk in chunks:
@@ -143,6 +155,7 @@ def chat(payload: ChatRequest, request: Request) -> dict:
             "limit_reached": True,
             "remaining": limit_result.remaining,
             "limit": limit_result.limit,
+            "prompt_version": get_prompt_version(),
         }
 
     message_excerpt = safe_message_excerpt(payload.message)
@@ -154,6 +167,7 @@ def chat(payload: ChatRequest, request: Request) -> dict:
             "sources": [],
             "remaining": limit_result.remaining,
             "limit": limit_result.limit,
+            "prompt_version": get_prompt_version(),
         }
 
     normalized = payload.message.strip().lower()
@@ -165,13 +179,14 @@ def chat(payload: ChatRequest, request: Request) -> dict:
                 "sources": cached.get("sources", []),
                 "remaining": limit_result.remaining,
                 "limit": limit_result.limit,
+                "prompt_version": get_prompt_version(),
             }
 
-    context_chunks = retrieve_context(payload.message)
+    sanitized_history = _sanitize_history(payload.history)
+    retrieval_query = _retrieval_query(payload.message, sanitized_history)
+    context_chunks = retrieve_context(retrieval_query)
     sources = _build_sources(context_chunks)
     system_prompt, user_prompt = build_prompt(payload.message, context_chunks)
-
-    sanitized_history = _sanitize_history(payload.history)
 
     api_key = payload.auth.byok_token if (payload.auth and payload.auth.type == "byok") else settings.OPENAI_API_KEY
     answer = create_response(
@@ -191,6 +206,7 @@ def chat(payload: ChatRequest, request: Request) -> dict:
         "sources": sources,
         "remaining": limit_result.remaining,
         "limit": limit_result.limit,
+        "prompt_version": get_prompt_version(),
     }
 
 

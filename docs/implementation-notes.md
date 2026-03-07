@@ -80,6 +80,11 @@ Frontend app routes: `frontend/src/app/` (e.g. `ai/page.tsx`, `projects/[slug]/p
 
 ## AI Me — Prompts & scope
 
+### Prompt templates (runtime)
+- **Location:** `backend/app/llm/prompt_templates/` — plain-text `.md` files (iteration0.md, iteration1.md, …).
+- **Active prompt:** Selected in `backend/app/llm/prompts.py` via `ACTIVE_PROMPT = "iteration0"` (or `"iteration1"`). Loader reads the file and uses it as the system prompt.
+- **Future:** Consider moving prompt selection to config/env (`AI_ME_PROMPT_NAME`) so different environments can use different prompts without code changes; enables A/B testing and per-deployment overrides. Revisit when needed.
+
 ### System prompt (`backend/app/llm/prompts.py`)
 - Scope: professional background, projects (including this site and AI Me), architecture/tech/implementation, methodology, education when relevant.
 - First person ("I"); no "Tomas's perspective" framing.
