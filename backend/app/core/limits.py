@@ -11,7 +11,7 @@ class LimitConfig:
 
 
 LIMITS: dict[str, LimitConfig] = {
-    "anonymous": LimitConfig(total_cap=5, total_window_seconds=None, rpm_cap=10),
+    "anonymous": LimitConfig(total_cap=10, total_window_seconds=None, rpm_cap=10),
     "verified": LimitConfig(total_cap=20, total_window_seconds=86400, rpm_cap=30),
     "byok": LimitConfig(total_cap=None, total_window_seconds=None, rpm_cap=60),
 }

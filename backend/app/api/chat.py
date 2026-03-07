@@ -7,7 +7,7 @@ from app.core.cache import cache_get_json, cache_set_json, get_cache, hash_text
 from app.core.config import get_settings
 from app.core.limits import check_limits, get_limit_status
 from app.core.logging import get_logger, safe_message_excerpt
-from app.core.security import is_disallowed_topic, is_in_scope
+from app.core.security import is_disallowed_topic
 from app.llm.openai_client import create_response
 from app.llm.prompts import build_prompt
 from app.rag.retrieval import ContextChunk, retrieve_context
@@ -34,11 +34,17 @@ class AuthPayload(BaseModel):
     byok_token: str | None = None
 
 
+class HistoryTurn(BaseModel):
+    role: str
+    content: str
+
+
 class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, max_length=2000)
     session_id: str | None = None
     visitor_id: str | None = None
     auth: AuthPayload | None = None
+    history: list[HistoryTurn] | None = None
 
     @field_validator("message")
     @classmethod
@@ -79,6 +85,21 @@ def _limit_message() -> str:
         "Thank you for your genuine interest! You’ve reached today’s free limit for AI Me. "
         "Should you have further questions, kindly email me instead."
     )
+
+
+def _sanitize_history(history: list[HistoryTurn] | None) -> list[dict]:
+    if not history:
+        return []
+    out: list[dict] = []
+    for turn in history:
+        role = (turn.role or "").strip().lower()
+        if role not in ("user", "assistant"):
+            continue
+        content = (turn.content or "").strip()
+        if not content:
+            continue
+        out.append({"role": role, "content": content})
+    return out[-6:]  # cap at 6
 
 
 def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
@@ -135,14 +156,6 @@ def chat(payload: ChatRequest, request: Request) -> dict:
             "limit": limit_result.limit,
         }
 
-    if not is_in_scope(payload.message):
-        return {
-            "answer": _refusal_message(),
-            "sources": [],
-            "remaining": limit_result.remaining,
-            "limit": limit_result.limit,
-        }
-
     normalized = payload.message.strip().lower()
     if normalized in PRESET_QUESTION_SET:
         cached = cache_get_json(cache, f"answer:{hash_text(normalized)}")
@@ -158,8 +171,12 @@ def chat(payload: ChatRequest, request: Request) -> dict:
     sources = _build_sources(context_chunks)
     system_prompt, user_prompt = build_prompt(payload.message, context_chunks)
 
+    sanitized_history = _sanitize_history(payload.history)
+
     api_key = payload.auth.byok_token if (payload.auth and payload.auth.type == "byok") else settings.OPENAI_API_KEY
-    answer = create_response(system_prompt, user_prompt, settings.OPENAI_MODEL, api_key)
+    answer = create_response(
+        system_prompt, user_prompt, settings.OPENAI_MODEL, api_key, history=sanitized_history
+    )
 
     if normalized in PRESET_QUESTION_SET:
         cache_set_json(

@@ -380,11 +380,20 @@ export default function AiMePage() {
     appendMessage(userMessage);
     setHasStarted(true);
 
+    const history = messages
+      .slice(1)
+      .slice(-6)
+      .map((m) => ({ role: m.role, content: m.content }));
+
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, visitor_id: getVisitorId() }),
+        body: JSON.stringify({
+          message: trimmed,
+          visitor_id: getVisitorId(),
+          history,
+        }),
       });
 
       if (!response.ok) {

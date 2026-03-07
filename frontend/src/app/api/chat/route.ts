@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
 type ChatRequestBody = {
   message?: string;
   visitor_id?: string;
+  history?: ChatMessage[];
 };
 
 export async function POST(request: Request) {
@@ -36,6 +42,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         message: body.message,
         visitor_id: body.visitor_id ?? undefined,
+        history: body.history ?? undefined,
       }),
     });
 

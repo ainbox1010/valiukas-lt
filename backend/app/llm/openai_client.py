@@ -64,17 +64,23 @@ def get_embeddings_batch(
 
 
 def create_response(
-    system_prompt: str, user_prompt: str, model: str, api_key: str
+    system_prompt: str,
+    user_prompt: str,
+    model: str,
+    api_key: str,
+    history: list[dict] | None = None,
 ) -> str:
     client = _get_client(api_key)
+
+    messages: list[dict] = [{"role": "system", "content": system_prompt}]
+    if history:
+        messages.extend(history)
+    messages.append({"role": "user", "content": user_prompt})
 
     if hasattr(client, "responses"):
         response = client.responses.create(
             model=model,
-            input=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
+            input=messages,
         )
 
         if hasattr(response, "output_text") and response.output_text:
@@ -88,10 +94,7 @@ def create_response(
     else:
         response = client.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
+            messages=messages,
         )
         return response.choices[0].message.content.strip()
 
