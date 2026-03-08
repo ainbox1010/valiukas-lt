@@ -14,6 +14,7 @@ Reference for future work: what was implemented and why. Update this when making
 |-------|-------------|--------|
 | **Project architecture** | `valiukas_lt_source_of_truth.md` §1 (high-level), `backend_ai_me_source_of_truth.md` §3–4 (tech stack, repo structure) | Frontend: Next.js (Vercel). Backend: FastAPI (Railway). RAG: Pinecone. One LLM call per message. |
 | **RAG design** | `backend_ai_me_source_of_truth.md` §8 (metadata, chunking, retrieval) | Current behaviour (intent routing, general source, dedupe): this file, section "AI Me — RAG & retrieval". Chunking: ~1400 chars, 200 overlap — see `backend/app/rag/chunking.py` and `index_projects.py`. |
+| **Retrieval tweaks plan** | `docs/retrieval-tweaks-plan.md` | Short follow-up composition, methodology intent, guaranteed tomas chunk for business discovery. |
 | **Pinecone namespaces** | **This file** (below) | Specs mention generic namespace; actual namespaces are defined in code and summarized here. |
 | **AI-Me behaviour rules** | `backend_ai_me_source_of_truth.md` §9 (identity, source priority, refusal, tone), `.cursor/rules/ai-me-product-behavior.mdc` (limits, CTAs, tone) | Current prompts and scope check: this file, "AI Me — Prompts & scope". |
 | **Page structure** | **This file** (below) | `valiukas_lt_source_of_truth.md` §3 has an older site map; current routes are listed here. |
@@ -113,6 +114,11 @@ Frontend app routes: `frontend/src/app/` (e.g. `ai/page.tsx`, `projects/[slug]/p
 
 ### Empty state
 - **Text:** "I represent Tomas's work and thinking. Ask about projects, architecture decisions, or automation strategy." (Replaces previous "Hi — I'm an AI representation of Tomas...")
+
+### Input placeholder (TODO)
+- **Location:** `frontend/src/app/ai/page.tsx` — `placeholder` on the chat input.
+- **Current:** "Ask about product, process, or company systems — automation and AI included…"
+- **Reminder:** Update this text when refining AI Me positioning or scope.
 
 ### Scroll behavior
 - When a new assistant message is added, only the **chat transcript** scrolls to show the start of the answer (not the whole page). Implemented in `scrollToLastMessageInTranscript()` using the transcript container ref.

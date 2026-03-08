@@ -28,11 +28,37 @@ def _detect_background_intent(message: str) -> bool:
     return any(kw in msg_lower for kw in BACKGROUND_INTENT_KEYWORDS)
 
 
+# Keywords that indicate user is asking about approach, methodology, framework, decisions
+METHODOLOGY_INTENT_KEYWORDS = [
+    "approach", "methodology", "framework", "decide", "decision",
+    "when to use", "how do you", "when do you", "how do you approach",
+]
+
+
+def _detect_methodology_intent(message: str) -> bool:
+    """True if the query is about approach, methodology, framework, or how decisions are made."""
+    msg_lower = message.lower().strip()
+    return any(kw in msg_lower for kw in METHODOLOGY_INTENT_KEYWORDS)
+
+
 # Partner names as stored in metadata -> query keywords (lowercase)
 PARTNER_FILTER_MAP = {
     "erobot.ai": ["erobot", "erobot.ai"],
     "beelogic.io": ["beelogic", "beelogic.io"],
 }
+
+
+# Phrases that indicate vague business discovery (e.g. "I run a coffee shop", "we have too much manual work")
+BUSINESS_DISCOVERY_PHRASES = [
+    "i run", "we run", "i have", "we have", "i need help", "we need help",
+    "we import", "we do", "we make", "we have too much", "too much manual",
+]
+
+
+def _is_business_discovery_query(message: str) -> bool:
+    """True if the query looks like vague business discovery rather than a specific question."""
+    msg_lower = message.lower().strip()
+    return any(phrase in msg_lower for phrase in BUSINESS_DISCOVERY_PHRASES)
 
 
 def _detect_partner_filter(message: str) -> str | None:
@@ -151,6 +177,8 @@ def retrieve_context(message: str) -> list[ContextChunk]:
         else None
     )
     background_intent = _detect_background_intent(message)
+    methodology_intent = _detect_methodology_intent(message)
+    tomas_first_intent = background_intent or methodology_intent
 
     def _score(m):
         return m.get("score") if isinstance(m, dict) else getattr(m, "score", None) or 0.0
@@ -173,8 +201,8 @@ def retrieve_context(message: str) -> list[ContextChunk]:
                 logger.warning("retrieve_context namespace=%s error=%s", ns, e)
             return []
 
-    if background_intent:
-        # CV + methodology first (tomas), then optional project context
+    if tomas_first_intent:
+        # CV/methodology first (tomas), then optional project context
         cv_matches = _query_ns(CV_NAMESPACE, top_k=12)
         proj_public = _query_ns("projects_public", top_k=2)
         proj_rag = _query_ns("projects_rag", top_k=2)
@@ -196,8 +224,17 @@ def retrieve_context(message: str) -> list[ContextChunk]:
         if chunk:
             chunks.append(chunk)
 
-    chunks = _dedupe(chunks, namespace_aware=background_intent)
+    chunks = _dedupe(chunks, namespace_aware=tomas_first_intent)
     chunks = _dedupe_by_slug(chunks, max_per_slug=1)[:24]
+
+    # Guarantee at least one tomas chunk for vague business discovery (avoid catalog-style responses)
+    has_tomas = any(c.namespace == CV_NAMESPACE for c in chunks)
+    if not has_tomas and _is_business_discovery_query(message):
+        tomas_matches = _query_ns(CV_NAMESPACE, top_k=1)
+        if tomas_matches:
+            chunk = _match_to_chunk(tomas_matches[0], CV_NAMESPACE)
+            if chunk:
+                chunks = [chunk] + chunks[:23]  # keep 24 total
 
     cache_set_json(
         cache,

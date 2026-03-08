@@ -7,3 +7,4 @@ pinecone==3.2.2
 redis==5.0.1
 pypdf==4.2.0
 tiktoken==0.7.0
+pytest>=8.0

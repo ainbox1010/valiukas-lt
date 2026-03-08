@@ -17,6 +17,7 @@ type ChatMessage = {
   content: string;
   sources?: ChatSource[];
   limitReached?: boolean;
+  cta?: "none" | "contact";
 };
 
 const initialMessage: ChatMessage = {
@@ -403,6 +404,7 @@ export default function AiMePage() {
       const data = (await response.json()) as {
         answer?: string;
         sources?: ChatSource[];
+        cta?: "none" | "contact";
         limit_reached?: boolean;
         remaining?: number | null;
         limit?: number | null;
@@ -418,6 +420,7 @@ export default function AiMePage() {
         content: data.answer,
         sources: data.sources ?? [],
         limitReached: data.limit_reached ?? false,
+        cta: data.cta ?? "none",
       });
       if (typeof data.remaining === "number" && typeof data.limit === "number") {
         setQuota({ remaining: data.remaining, limit: data.limit });
@@ -470,13 +473,14 @@ export default function AiMePage() {
                 {message.role === "user" ? "You" : "AI"}
               </div>
               <div>{renderMessageContent(message.content)}</div>
-              {message.role === "assistant" && message.limitReached ? (
+              {message.role === "assistant" &&
+              (message.cta === "contact" || message.limitReached) ? (
                 <div className="chat-actions">
                   <a
-                    className="chat-action secondary"
-                    href="mailto:contact@valiukas.lt?subject=AI%20Me%20—%20question"
+                    href="mailto:contact@valiukas.lt"
+                    className="chat-cta-pill"
                   >
-                    Email me
+                    Contact Tomas
                   </a>
                 </div>
               ) : null}

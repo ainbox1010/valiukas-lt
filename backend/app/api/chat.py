@@ -1,3 +1,4 @@
+import re
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, Request, Query
@@ -102,16 +103,132 @@ def _sanitize_history(history: list[HistoryTurn] | None) -> list[dict]:
     return out[-6:]  # cap at 6
 
 
+_QUESTION_STARTERS = frozenset({"how", "what", "why", "when", "where", "who"})
+
+
+def _is_short_narrowing_reply(message: str) -> bool:
+    """True if message is a short narrowing reply (e.g. 'inventory', 'documents').
+    Excludes short question starters like 'how', 'what', 'why'."""
+    words = message.strip().split()
+    if not words or len(words) > 3:
+        return False
+    if words[0].lower() in _QUESTION_STARTERS:
+        return False
+    return True
+
+
 def _retrieval_query(message: str, sanitized_history: list[dict]) -> str:
-    """Use last substantive user message for retrieval when current message is a follow-up affirmative."""
-    if not is_followup_affirmative(message):
+    """Compose retrieval query when current message is a follow-up (affirmative or short narrowing).
+    Uses last substantive user message + current message so retrieval has full context."""
+    should_compose = is_followup_affirmative(message) or _is_short_narrowing_reply(message)
+    if not should_compose:
         return message
     if not sanitized_history:
         return message
+
+    # Find last substantive user message (skip affirmatives and short narrowing)
+    last_substantive: str | None = None
     for turn in reversed(sanitized_history):
-        if turn.get("role") == "user" and (turn.get("content") or "").strip():
-            return turn["content"].strip()
+        if turn.get("role") != "user":
+            continue
+        content = (turn.get("content") or "").strip()
+        if not content:
+            continue
+        if is_followup_affirmative(content) or _is_short_narrowing_reply(content):
+            continue
+        last_substantive = content
+        break
+
+    if last_substantive:
+        return f"{last_substantive} {message.strip()}"
     return message
+
+
+def _normalize_for_match(text: str) -> str:
+    return re.sub(r"\s+", " ", (text or "").strip().lower())
+
+
+def _detect_cta(message: str) -> str:
+    """
+    Return 'contact' when the user message clearly signals reach-out, commercial,
+    or implementation intent. Return 'none' otherwise.
+    CTA is determined only from the user message (no answer inspection).
+    """
+    msg = _normalize_for_match(message)
+
+    reachout_patterns = [
+        r"\bhow can i contact (the )?real you\b",
+        r"\bhow can i contact you\b",
+        r"\bhow do i contact you\b",
+        r"\bcan i contact you\b",
+        r"\bhow can we contact you\b",
+        r"\bhow do we contact you\b",
+        r"\bhow can i reach you\b",
+        r"\bhow do i reach you\b",
+        r"\bwhat is your email\b",
+        r"\bwhat's your email\b",
+        r"\bcan we talk\b",
+        r"\bcan we discuss this\b",
+        r"\bhow do we proceed\b",
+        r"\bhow should we proceed\b",
+        r"\bwhat is the next step\b",
+        r"\bwhat are the next steps\b",
+    ]
+
+    commercial_patterns = [
+        r"\bcan you make (me )?an offer\b",
+        r"\bcan you send (me )?an offer\b",
+        r"\bcan you give (me )?a quote\b",
+        r"\bcan you send (me )?a quote\b",
+        r"\bwhat would it cost\b",
+        r"\bhow much would it cost\b",
+        r"\bwhat is the cost\b",
+        r"\bwhat is your price\b",
+        r"\bwhat are your prices\b",
+        r"\bwhat is your pricing\b",
+        r"\bwhat are your rates\b",
+        r"\bwhat do you charge\b",
+        r"\bwhat is the budget\b",
+    ]
+
+    implementation_patterns = [
+        r"\bcan you help us implement\b",
+        r"\bcan you help implement\b",
+        r"\bcan you do this for us\b",
+        r"\bcould you do this for us\b",
+        r"\bcan you build this\b",
+        r"\bcould you build this\b",
+        r"\bcan we work together\b",
+        r"\bi want to work with you\b",
+        r"\bwe want to work with you\b",
+    ]
+
+    engagement_patterns = [
+        r"\bcan you build .* for (me|us)\b",
+        r"\bcould you build .* for (me|us)\b",
+        r"\bcan you implement .* for (me|us)\b",
+        r"\bcould you implement .* for (me|us)\b",
+        r"\bcan you develop .* for (me|us)\b",
+        r"\bcould you develop .* for (me|us)\b",
+        r"\bcan you create .* for (me|us)\b",
+        r"\bcould you create .* for (me|us)\b",
+        r"\bcan you make .* for (me|us)\b",
+        r"\bcould you make .* for (me|us)\b",
+        r"\bcan you do this for (me|us)\b",
+        r"\bcould you do this for (me|us)\b",
+        r"\bcan you help (me|us) (solve|implement)\b",
+        r"\bcould you help (me|us) (solve|implement)\b",
+    ]
+
+    for pattern in (
+        reachout_patterns
+        + commercial_patterns
+        + implementation_patterns
+        + engagement_patterns
+    ):
+        if re.search(pattern, msg):
+            return "contact"
+    return "none"
 
 
 def _build_sources(chunks: list[ContextChunk]) -> list[dict]:
@@ -152,6 +269,7 @@ def chat(payload: ChatRequest, request: Request) -> dict:
         return {
             "answer": _limit_message(),
             "sources": [],
+            "cta": "contact",
             "limit_reached": True,
             "remaining": limit_result.remaining,
             "limit": limit_result.limit,
@@ -165,6 +283,7 @@ def chat(payload: ChatRequest, request: Request) -> dict:
         return {
             "answer": _refusal_message(),
             "sources": [],
+            "cta": "none",
             "remaining": limit_result.remaining,
             "limit": limit_result.limit,
             "prompt_version": get_prompt_version(),
@@ -174,9 +293,11 @@ def chat(payload: ChatRequest, request: Request) -> dict:
     if normalized in PRESET_QUESTION_SET:
         cached = cache_get_json(cache, f"answer:{hash_text(normalized)}")
         if cached and "answer" in cached:
+            cta = _detect_cta(payload.message)
             return {
                 "answer": cached["answer"],
                 "sources": cached.get("sources", []),
+                "cta": cta,
                 "remaining": limit_result.remaining,
                 "limit": limit_result.limit,
                 "prompt_version": get_prompt_version(),
@@ -201,9 +322,11 @@ def chat(payload: ChatRequest, request: Request) -> dict:
             ttl_seconds=86400,
         )
 
+    cta = _detect_cta(payload.message)
     return {
         "answer": answer,
         "sources": sources,
+        "cta": cta,
         "remaining": limit_result.remaining,
         "limit": limit_result.limit,
         "prompt_version": get_prompt_version(),
