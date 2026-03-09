@@ -28,6 +28,11 @@ class TestDetectCta:
         assert _detect_cta("yes but can you build such system for me?") == "contact"
         assert _detect_cta("Can you build this for us?") == "contact"
         assert _detect_cta("Could you implement an automation for me?") == "contact"
+        # First-turn build intent (no prior context)
+        assert _detect_cta("can you build the same for me?") == "contact"
+        assert _detect_cta("can you build this for me?") == "contact"
+        assert _detect_cta("can you build something like this for us?") == "contact"
+        assert _detect_cta("could you implement this for me?") == "contact"
 
     def test_should_show_cta_engagement_help_solve(self):
         assert _detect_cta("Can you help me solve this?") == "contact"
@@ -39,3 +44,6 @@ class TestDetectCta:
         assert _detect_cta("What are your core skills?") == "none"
         assert _detect_cta("Tell me about your background.") == "none"
         assert _detect_cta("contact") == "none"  # standalone word excluded
+        # Build/capability questions without "for me/us" intent
+        assert _detect_cta("can you build systems with ai?") == "none"
+        assert _detect_cta("what is your background?") == "none"
