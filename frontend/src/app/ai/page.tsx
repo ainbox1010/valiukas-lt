@@ -29,16 +29,77 @@ const initialMessage: ChatMessage = {
 
 const suggestedQuestions = [
   "What is your background?",
-  "Tell me about a real automation project you implemented.",
-  "How do you decide between RPA, AI, and custom software?",
-  "How do you evaluate whether AI is actually needed?",
-  "How would you design an AI-assisted automation system?",
+  "What kinds of business problems do you usually work on?",
+  "Tell me about a real automation project.",
+  "How do you decide whether a process needs automation or AI?",
+  "I have a problem in my business — where would you start?",
 ];
 
 const STORAGE_KEY_MESSAGES = "ai_me_messages";
 const STORAGE_KEY_QUOTA = "ai_me_quota";
 const STORAGE_KEY_VISITOR = "ai_me_visitor_id";
 const URL_PATTERN = /(https?:\/\/[^\s]+)/g;
+
+/** Convert markdown to plain text for email paste (no **, *, `, etc.). */
+function stripMarkdownToPlainText(text: string): string {
+  let out = text
+    // Inline: **bold** __bold__
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/__(.+?)__/g, "$1")
+    // Inline: *italic* _italic_
+    .replace(/\*([^*]+?)\*/g, "$1")
+    .replace(/_([^_]+)_/g, "$1")
+    // Inline: `code`
+    .replace(/`([^`]+)`/g, "$1")
+    // Inline: [text](url) -> text (url)
+    .replace(/\[([^\]]*)\]\(([^)]+)\)/g, (_, t, u) => (t ? `${t} (${u})` : u))
+    // Inline: ~~strikethrough~~
+    .replace(/~~(.+?)~~/g, "$1");
+  // Block: headings # ## ###
+  out = out.replace(/^#{1,6}\s+/gm, "");
+  // Block: blockquote >
+  out = out.replace(/^>\s?/gm, "");
+  // Block: list markers - * + 1.
+  out = out.replace(/^[\-\*\+]\s+/gm, "• ");
+  out = out.replace(/^\d+\.\s+/gm, "• ");
+  // Horizontal rules
+  out = out.replace(/^[-*_]{3,}\s*$/gm, "");
+  return out.trim();
+}
+
+function formatConversationForCopy(messages: ChatMessage[]): string {
+  const today = new Date();
+  const dateStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const header = [
+    "Conversation with AI Me",
+    `Date: ${dateStr}`,
+    "Source: https://valiukas.lt/ai",
+    "",
+  ].join("\n");
+
+  const blocks: string[] = [];
+  let i = 0;
+  while (i < messages.length) {
+    const m = messages[i];
+    const plain = stripMarkdownToPlainText(m.content);
+    if (m.role === "user") {
+      const blockParts = [`You: ${plain}`];
+      i++;
+      if (i < messages.length && messages[i].role === "assistant") {
+        blockParts.push(
+          `AI: ${stripMarkdownToPlainText(messages[i].content)}`
+        );
+        i++;
+      }
+      blocks.push(blockParts.join("\n\n"));
+    } else {
+      blocks.push(`AI: ${plain}`);
+      i++;
+    }
+  }
+  const separator = "\n" + "-".repeat(50) + "\n";
+  return header + blocks.join(separator);
+}
 
 const getVisitorId = () => {
   if (typeof window === "undefined") return null;
@@ -228,6 +289,8 @@ export default function AiMePage() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [copyJustCompleted, setCopyJustCompleted] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -314,6 +377,12 @@ export default function AiMePage() {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isSending]);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
 
   // Prefill from URL ?q= (e.g. from "Ask AI Me about projects" link)
   useEffect(() => {
@@ -472,12 +541,51 @@ export default function AiMePage() {
               <div className="chat-role">
                 {message.role === "user" ? "You" : "AI"}
               </div>
-              <div>{renderMessageContent(message.content)}</div>
+              <div>
+                {renderMessageContent(
+                  message.limitReached &&
+                  !message.content.includes(
+                    "If helpful, copy this conversation into your email"
+                  )
+                    ? `${message.content}\n\nIf helpful, copy this conversation into your email so you don't have to explain everything again.`
+                    : message.content
+                )}
+              </div>
               {message.role === "assistant" &&
               (message.cta === "contact" || message.limitReached) ? (
                 <div className="chat-actions">
+                  {message.limitReached ? (
+                    <button
+                      type="button"
+                      className="chat-cta-pill chat-cta-pill-copy"
+                      onClick={() => {
+                        const text = formatConversationForCopy(messages);
+                        void navigator.clipboard.writeText(text).then(() => {
+                          if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+                          setCopyJustCompleted(true);
+                          copyTimeoutRef.current = setTimeout(() => {
+                            setCopyJustCompleted(false);
+                            copyTimeoutRef.current = null;
+                          }, 2000);
+                        });
+                      }}
+                    >
+                      <span
+                        style={{
+                          visibility: copyJustCompleted ? "hidden" : "visible",
+                        }}
+                      >
+                        Copy conversation
+                      </span>
+                      {copyJustCompleted && (
+                        <span className="chat-cta-pill-copy-overlay">
+                          Copied ✓
+                        </span>
+                      )}
+                    </button>
+                  ) : null}
                   <a
-                    href="mailto:contact@valiukas.lt"
+                    href="mailto:contact@valiukas.lt?subject=Conversation%20with%20AI%20Me"
                     className="chat-cta-pill"
                   >
                     Contact Tomas
@@ -534,7 +642,7 @@ export default function AiMePage() {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Ask about product, process, or company systems — automation and AI included…"
+            placeholder="Ask about my background or your business"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyDown={handleKeyDown}

@@ -1595,10 +1595,61 @@ a:hover {
   background: transparent;
   text-decoration: none;
   font-size: 14px;
+  font-family: inherit;
   cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
   transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
 }
 .chat-cta-pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.04);
+}
+.chat-cta-pill-copy {
+  position: relative;
+}
+.chat-cta-pill-copy-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chat-cta-pill-secondary {
+  border-color: var(--border);
+  color: var(--text-muted, var(--text));
+}
+.chat-cta-pill-secondary:hover {
+  border-color: var(--text-muted, var(--text));
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Project refs: clickable project links under assistant message */
+.chat-project-refs {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chat-project-ref-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: transparent;
+  text-decoration: none;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+.chat-project-ref-link:hover {
   border-color: var(--accent);
   color: var(--accent);
   background: rgba(var(--accent-rgb), 0.04);
