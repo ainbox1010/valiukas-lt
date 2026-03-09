@@ -181,8 +181,9 @@ def _detect_cta(message: str) -> str:
         r"\bcan you send (me )?an offer\b",
         r"\bcan you give (me )?a quote\b",
         r"\bcan you send (me )?a quote\b",
+        r"\bgive (me )?a quote\b",
         r"\bwhat would it cost\b",
-        r"\bhow much would it cost\b",
+        r"\bhow much would (it|this) cost\b",
         r"\bwhat is the cost\b",
         r"\bwhat is your price\b",
         r"\bwhat are your prices\b",
@@ -195,10 +196,16 @@ def _detect_cta(message: str) -> str:
     implementation_patterns = [
         r"\bcan you help us implement\b",
         r"\bcan you help implement\b",
+        r"\bcan you help (me|us) build\b",
         r"\bcan you do this for us\b",
         r"\bcould you do this for us\b",
+        r"\bcan you do this for our company\b",
+        r"\bcould you do this for our company\b",
         r"\bcan you build this\b",
         r"\bcould you build this\b",
+        r"\bcan you build something like this\b",
+        r"\bcan you implement this\b",
+        r"\bcould you implement this\b",
         r"\bcan we work together\b",
         r"\bi want to work with you\b",
         r"\bwe want to work with you\b",
@@ -219,6 +226,10 @@ def _detect_cta(message: str) -> str:
         r"\bcould you do this for (me|us)\b",
         r"\bcan you help (me|us) (solve|implement)\b",
         r"\bcould you help (me|us) (solve|implement)\b",
+        r"\bi want something like this\b",
+        r"\bi want .* like this\b",
+        r"\bi want this on my website\b",
+        r"\bi need something like this\b",
     ]
 
     for pattern in (
