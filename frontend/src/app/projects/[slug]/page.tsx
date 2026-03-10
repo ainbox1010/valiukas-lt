@@ -13,8 +13,8 @@ export async function generateStaticParams() {
     .filter(
       (frontmatter) =>
         frontmatter.content_type === "project" &&
-        frontmatter.visibility === "public" &&
-        frontmatter.case_visibility === "public_detail" &&
+        String(frontmatter.visibility ?? "public") === "public" &&
+        String(frontmatter.case_visibility ?? "public_detail") !== "rag_only" &&
         typeof frontmatter.slug === "string" &&
         String(frontmatter.slug).startsWith("projects/")
     )
