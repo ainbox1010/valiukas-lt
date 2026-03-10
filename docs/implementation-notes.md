@@ -131,9 +131,9 @@ Frontend app routes: `frontend/src/app/` (e.g. `ai/page.tsx`, `projects/[slug]/p
 
 ## Favicon
 
-- **Serving:** Use `public/favicon.ico` and `public/favicon-32x32.ico`. Do **not** put `favicon.ico` in `app/` as a file — it caused 500 in Next.js. Static files in `public/` are served at root.
-- **Metadata:** `layout.tsx` — `icons: { icon: "/favicon.ico", apple: "/apple-icon.png" }`.
-- **Safari:** Explicit `background` and `appearance: none` on buttons to avoid default light gray; favicon in `public/` with correct format (.ico) for Safari.
+- **Serving:** Use `public/valiukas_favicon_32.png`. Static files in `public/` are served at root.
+- **Metadata:** `layout.tsx` — `icons: { icon: "/valiukas_favicon_32.png", apple: "/valiukas_favicon_32.png" }`.
+- **Safari:** Explicit `background` and `appearance: none` on buttons to avoid default light gray; favicon in `public/` (PNG supported).
 
 ---
 

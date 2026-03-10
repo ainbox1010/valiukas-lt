@@ -8,8 +8,8 @@ export const metadata = {
   description:
     "Personal website for Tomas Valiukas: services, projects, and an AI agent grounded in trusted sources.",
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-icon.png",
+    icon: "/valiukas_favicon_32.png",
+    apple: "/valiukas_favicon_32.png",
   },
 };
 
